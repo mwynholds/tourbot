@@ -16,8 +16,3 @@ group :development, :test do
   gem 'heroku'
   gem 'taps'
 end
-
-group :test do
-  # Pretty printed test output
-  gem 'turn', :require => false
-end
