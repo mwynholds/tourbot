@@ -18,6 +18,7 @@ ActiveRecord::Schema.define(:version => 20111102232119) do
     t.string   "name"
     t.boolean  "final"
     t.string   "session_id"
+    t.string   "variant"
     t.datetime "created_at"
     t.datetime "updated_at"
   end

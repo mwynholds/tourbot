@@ -5,6 +5,7 @@ class CreateInteractions < ActiveRecord::Migration
       t.string :name
       t.boolean :final
       t.string :session_id
+      t.string :variant
 
       t.timestamps
     end
