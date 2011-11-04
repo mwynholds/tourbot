@@ -18,12 +18,14 @@
       var session_id = guid();
       var variant = ( Math.floor(Math.random()*2) == 0 ? 'A' : 'B' );
 
-      for (var i = 0; i < config.interactions.length; i++) {
-        var interaction = config.interactions[i];
+      var interactions = config.interactions;
+      var source = config.source;
+      for (var i = 0; i < interactions.length; i++) {
+        var interaction = interactions[i];
         var payload = {
-          source: config.source,
+          source: source,
           name: interaction.name,
-          'final': ( i == config.interactions.length - 1 ),
+          'final': ( i == interactions.length - 1 ),
           session_id: session_id,
           variant: variant
         };
