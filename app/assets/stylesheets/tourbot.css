@@ -1,0 +1,127 @@
+#tourbot {
+  position: absolute;
+  background: #3c3c3c;
+  color: #ddd;
+  position: absolute;
+  margin: 0 auto;
+  padding: 10px;
+  border-radius: 10px;
+  font-family: Helvetica, Arial, sans-serif;
+  font-size: 12px;
+  line-height: 16px;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.75), inset 1px 1px 0 #4b4b4b;
+  -webkit-transition: all .5s ease-in-out;
+  -moz-transition: all .5s ease-in-out;
+  -o-transition: all .5s ease-in-out;
+  -ms-transition: all .5s ease-in-out;
+  transition: all .5s ease-in-out;
+  -webkit-transform: rotate(0deg);
+  -moz-transform: rotate(0deg);
+}
+
+#tourbot * {
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+#tourbot h2 {
+  font-size: 18px;
+  line-height: 24px;
+}
+
+#tourbot .button {
+  display: inline-block;
+  padding: 0 30px;
+  height: 30px;
+  line-height: 30px;
+  border-radius: 15px;
+  text-decoration: none;
+  font-size: 18px;
+  font-weight: bold;
+  background-color: #e01920;
+  background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#e01920), to(#9e090e));
+  background-image: -moz-linear-gradient(top, #e01920, #9e090e);
+  color: #ffffff;
+  text-shadow: 0 -1px 1px #3d0203;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.75);
+  margin: 0 10px 0 0;
+}
+
+#tourbot .button:hover {
+  background-color: #f93138;
+  background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#f93138), to(#9e090e));
+  background-image: -moz-linear-gradient(top, #f93138, #9e090e);
+}
+
+#tourbot #cancel {
+  background: none;
+  box-shadow: none;
+  text-shadow: none;
+  display: inline-block;
+  font-size: 12px;
+  line-height: 30px;
+  position: absolute;
+  bottom: 15px;
+  right: 1005px;
+}
+
+#tourbot a {
+  color: #666;
+  text-decoration: none;
+}
+
+#tourbot a:hover {
+  color: #999;
+}
+
+#tourbot #by {
+  position: absolute;
+  font-size: 10px;
+  bottom: 3px;
+  right: 10px;
+  display: block;
+}
+
+#tourbot #close {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  border: 1px solid #666;
+  display: block;
+  font-size: 10px;
+  width: 8px;
+  height: 8px;
+  line-height: 6px;
+  text-align: center;
+}
+
+#tourbot #close:hover {
+  color: #999;
+  border: 1px solid #999;
+}
+
+#tourbot.step-0 {
+  text-align: center;
+  cursor: pointer;
+  width: 60px;
+  height: 20px;
+  top: 300px;
+  left: -30px;
+  -webkit-transform: rotate(-90deg);
+  -moz-transform: rotate(-90deg);
+}
+
+#tourbot.step-1 {
+  width: 200px;
+  height: 30px;
+}
+
+#tourbot.step-0 #close,
+#tourbot.step-0 #by {
+  display: none;
+}
+
+#tourbot.step-0 {
+  color: #fff;
+}
