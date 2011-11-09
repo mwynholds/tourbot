@@ -2,7 +2,7 @@
   var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
   var root = this;
   //var base_url = 'http://localhost:3000';
-  var base_url = 'http://tourbot.heroku.com';
+  var base_url = 'http://tourbot.herokuapp.com';
   var post_url = base_url + '/interactions';
 
   function guid() {
