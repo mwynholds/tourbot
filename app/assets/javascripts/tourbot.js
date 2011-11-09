@@ -1,7 +1,8 @@
 (function() {
   var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
   var root = this;
-  var url = 'http://localhost:3000';
+  var base_url = 'http://localhost:3000';
+  var post_url = base_url + '/interactions';
 
   function guid() {
     return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
@@ -17,14 +18,19 @@
     if (is_valid(config)) {
       var session_id = guid();
       var variant = ( Math.floor(Math.random()*2) == 0 ? 'A' : 'B' );
+      var interactions = config.interactions;
+      var source = config.source;
 
       variant = 'A';
       if (variant == 'A') {
         add_markup();
+        $('#tourbot').click(function() {
+          step(interactions[0]);
+        });
       }
 
-      var interactions = config.interactions;
-      var source = config.source;
+      $.post(post_url, { interaction: { source: source, name: '0', 'final': false, session_id: session_id, variant: variant } }, null, 'json');
+
       for (var i = 0; i < interactions.length; i++) {
         var interaction = interactions[i];
         var payload = {
@@ -37,7 +43,7 @@
 
         var phone_home = function(payload) {
           return function() {
-            $.post(url + '/interactions', { interaction: payload }, null, 'json');
+            $.post(post_url, { interaction: payload }, null, 'json');
           };
         }(payload);
 
@@ -71,8 +77,17 @@
     }
 
     function add_markup() {
-      $('head').append('<link rel="stylesheet" type="text/css" href="' + url + '/assets/tourbot.css"/>');
+      $('head').append('<link rel="stylesheet" type="text/css" href="' + base_url + '/assets/tourbot.css"/>');
       $('body').append('<div id="tourbot" class="step-0"><h2>Help</h2></div>');
+    }
+
+    function step(interaction) {
+      var tourbot = $('#tourbot');
+      var target = $(interaction.selector);
+      tourbot.attr('class', '').addClass('step-1');
+      tourbot.find('h2').html(interaction.message);
+      tourbot.css('left', (target.offset().left + target.outerWidth() + 5) + 'px');
+      tourbot.css('top', (target.offset().top - 12) + 'px');
     }
 
   });
