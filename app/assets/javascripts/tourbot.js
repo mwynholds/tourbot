@@ -1,7 +1,7 @@
 (function() {
   var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
   var root = this;
-  var url = 'http://localhost:3000/interactions';
+  var url = 'http://localhost:3000';
 
   function guid() {
     return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
@@ -18,6 +18,11 @@
       var session_id = guid();
       var variant = ( Math.floor(Math.random()*2) == 0 ? 'A' : 'B' );
 
+      variant = 'A';
+      if (variant == 'A') {
+        add_markup();
+      }
+
       var interactions = config.interactions;
       var source = config.source;
       for (var i = 0; i < interactions.length; i++) {
@@ -32,7 +37,7 @@
 
         var phone_home = function(payload) {
           return function() {
-            $.post(url, { interaction: payload }, null, 'json');
+            $.post(url + '/interactions', { interaction: payload }, null, 'json');
           };
         }(payload);
 
@@ -63,6 +68,11 @@
 
     function handle_clickable($input, phone_home) {
       $input.click( phone_home );
+    }
+
+    function add_markup() {
+      $('head').append('<link rel="stylesheet" type="text/css" href="' + url + '/assets/tourbot.css"/>');
+      $('body').append('<div id="tourbot" class="step-0"><h2>Help</h2></div>');
     }
 
   });
