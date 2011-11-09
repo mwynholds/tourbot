@@ -2,7 +2,16 @@
   var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
   var root = this;
   //var base_url = 'http://localhost:3000';
-  var base_url = 'http://tourbot.herokuapp.com';
+  var base_url, css_url;
+  if (root.location.href.indexOf('http://localhost:3000') == 0) {
+    base_url = 'http://localhost:3000';
+    css_url = base_url + '/assets/tourbot.css';
+  }
+  else {
+    base_url = 'http://tourbot.herokuapp.com';
+    css_url = base_url + '/assets/application.css';
+  }
+
   var post_url = base_url + '/interactions';
 
   function guid() {
@@ -78,7 +87,7 @@
     }
 
     function add_markup() {
-      $('head').append('<link rel="stylesheet" type="text/css" href="' + base_url + '/assets/tourbot.css"/>');
+      $('head').append('<link rel="stylesheet" type="text/css" href="' + css_url + '"/>');
       $('body').append('<div id="tourbot" class="step-0"><h2>Help</h2></div>');
     }
 
