@@ -30,42 +30,6 @@
   line-height: 24px;
 }
 
-#tourbot .button {
-  display: inline-block;
-  padding: 0 30px;
-  height: 30px;
-  line-height: 30px;
-  border-radius: 15px;
-  text-decoration: none;
-  font-size: 18px;
-  font-weight: bold;
-  background-color: #e01920;
-  background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#e01920), to(#9e090e));
-  background-image: -moz-linear-gradient(top, #e01920, #9e090e);
-  color: #ffffff;
-  text-shadow: 0 -1px 1px #3d0203;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.75);
-  margin: 0 10px 0 0;
-}
-
-#tourbot .button:hover {
-  background-color: #f93138;
-  background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#f93138), to(#9e090e));
-  background-image: -moz-linear-gradient(top, #f93138, #9e090e);
-}
-
-#tourbot #cancel {
-  background: none;
-  box-shadow: none;
-  text-shadow: none;
-  display: inline-block;
-  font-size: 12px;
-  line-height: 30px;
-  position: absolute;
-  bottom: 15px;
-  right: 1005px;
-}
-
 #tourbot a {
   color: #666;
   text-decoration: none;
@@ -115,11 +79,6 @@
 #tourbot.step-1 {
   width: 200px;
   height: 30px;
-}
-
-#tourbot.step-0 #close,
-#tourbot.step-0 #by {
-  display: none;
 }
 
 #tourbot.step-0 {
