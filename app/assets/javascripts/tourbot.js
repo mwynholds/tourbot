@@ -2,16 +2,15 @@ var _tourconfig = {
   source: 'tourbot',
   interactions:
           [
-            { name: '1', selector: '#first-name', type: 'text', message: 'Tell me your name' },
-            { name: '2', selector: 'input.gender', offset: { x: 100, y: 0 }, type: 'clickable', message: 'Tell me whether you\'re a boy or girl' },
-            { name: '3', selector: 'fieldset.submit input', type: 'clickable', message: 'Now click this button!' }
+            { name: '1', inbound: '#first-name', outbound: '#last-name', type: 'text', message: 'Tell me your name' },
+            { name: '2', inbound: 'input.gender', offset: { x: 100, y: 0 }, type: 'clickable', message: 'Tell me whether you\'re a boy or girl' },
+            { name: '3', inbound: 'fieldset.submit input', type: 'clickable', message: 'Now click this button!' }
           ]
 };
 
 (function() {
   var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
   var root = this;
-  //var base_url = 'http://localhost:3000';
   var base_url, css_url;
   if (root.location.href.indexOf('http://localhost:3000') == 0) {
     base_url = 'http://localhost:3000';
@@ -68,11 +67,12 @@ var _tourconfig = {
           };
         }(payload);
 
-        var $input = $(interaction.selector);
+        var $input = $(interaction.inbound);
         if ($input.length > 0) {
-          switch(interaction.type) {
-            case 'text':      handle_text($input, phone_home);      break;
-            case 'clickable': handle_clickable($input, phone_home); break;
+          var type = interaction.type;
+          switch(type) {
+            case 'text':      handle_text(interaction, phone_home);      break;
+            case 'clickable': handle_clickable(interaction, phone_home); break;
           }
         }
       }
@@ -85,29 +85,31 @@ var _tourconfig = {
       return true;
     }
 
-    function handle_text($input, phone_home) {
-      $input.blur( function() {
-        if ($input.val() != '') {
-          phone_home();
-        }
-        step();
+    function handle_text(interaction, phone_home) {
+      var $inbound = $(interaction.inbound);
+      var $outbound = interaction.outbound ? $(interaction.outbound) : $inbound;
+      $inbound.blur( function() {
+        phone_home();
       });
+      $outbound.blur( function() {
+        step();
+      })
     }
 
-    function handle_clickable($input, phone_home) {
-      $input.click( function() {
+    function handle_clickable(interaction, phone_home) {
+      var $inbound = $(interaction.inbound);
+      var $outbound = interaction.outbound ? $(interaction.outbound) : $inbound;
+      $inbound.click( function() {
         phone_home();
+      });
+      $outbound.click( function() {
         step();
-      } );
+      });
     }
 
     function add_markup() {
       $('head').append('<link rel="stylesheet" type="text/css" href="' + css_url + '"/>');
       $('body').append('<div id="tourbot" class="closed"><h2>Help</h2></div>');
-    }
-
-    function find_container(target) {
-      return target;
     }
 
     function step() {
@@ -116,14 +118,13 @@ var _tourconfig = {
       current_step ++;
       if (current_step < interactions.length) {
         var interaction = interactions[current_step];
-        var target = $(interaction.selector);
-        var container = find_container(target);
+        var target = $(interaction.inbound);
         target.focus();
         var offset = interaction.offset || { x: 0, y: 0 };
         tourbot.removeClass('closed').addClass('open');
         tourbot.find('h2').html(interaction.message);
-        tourbot.css('left', (container.offset().left + container.outerWidth() + offset.x + 5) + 'px');
-        tourbot.css('top', (container.offset().top + offset.y - 12) + 'px');
+        tourbot.css('left', (target.offset().left + target.outerWidth() + offset.x + 5) + 'px');
+        tourbot.css('top', (target.offset().top + offset.y - 12) + 'px');
       }
       else {
         tourbot.removeClass('open').addClass('closed');
