@@ -45,11 +45,13 @@ var _tourconfig = {
       if (variant == 'A') {
         add_markup();
         $('#tourbot').click(function() {
-          step();
+          $.post(post_url, { interaction: { source: source, name: '0', 'final': false, session_id: session_id, variant: variant } }, null, 'json');
+          current_step = 0;
+          step_current();
         });
       }
 
-      $.post(post_url, { interaction: { source: source, name: '0', 'final': false, session_id: session_id, variant: variant } }, null, 'json');
+      $.post(post_url, { interaction: { source: source, name: '-1', 'final': false, session_id: session_id, variant: variant } }, null, 'json');
 
       for (var i = 0; i < interactions.length; i++) {
         var interaction = interactions[i];
@@ -88,23 +90,29 @@ var _tourconfig = {
     function handle_text(interaction, phone_home) {
       var $inbound = $(interaction.inbound);
       var $outbound = interaction.outbound ? $(interaction.outbound) : $inbound;
-      $inbound.blur( function() {
-        phone_home();
-      });
+      var step_in_f = function() {
+        step_in(interaction);
+      };
+
+      $inbound.blur(phone_home).focus(step_in_f);
       $outbound.blur( function() {
-        step();
-      })
+        step_out(interaction);
+      });
+      $outbound.focus(step_in_f);
     }
 
     function handle_clickable(interaction, phone_home) {
       var $inbound = $(interaction.inbound);
       var $outbound = interaction.outbound ? $(interaction.outbound) : $inbound;
-      $inbound.click( function() {
-        phone_home();
-      });
+      var step_in_f = function() {
+        step_in(interaction);
+      };
+
+      $inbound.click(phone_home).focus(step_in_f);
       $outbound.click( function() {
-        step();
+        step_out(interaction);
       });
+      $outbound.focus(step_in_f);
     }
 
     function add_markup() {
@@ -112,11 +120,31 @@ var _tourconfig = {
       $('body').append('<div id="tourbot" class="closed"><h2>Help</h2></div>');
     }
 
-    function step() {
+    function step_in(interaction) {
+      if (current_step >= 0) {
+        var new_step = interactions.indexOf(interaction);
+        if (new_step != current_step) {
+          current_step = new_step;
+          step_current();
+        }
+      }
+    }
+
+    function step_out(interaction) {
+      if (current_step >= 0) {
+        current_step = interactions.indexOf(interaction);
+        current_step ++;
+        if (current_step >= interactions.length) {
+          current_step = -1;
+        }
+        step_current();
+      }
+    }
+
+    function step_current() {
       var tourbot = $('#tourbot');
 
-      current_step ++;
-      if (current_step < interactions.length) {
+      if (current_step >= 0) {
         var interaction = interactions[current_step];
         var target = $(interaction.inbound);
         target.focus();
