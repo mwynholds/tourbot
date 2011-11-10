@@ -1,47 +1,8 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <title>I am a TourBOT!</title>
-  <style type="text/css" media="screen">
-    body {
-      background-color: #f0f0f0;
-      font-family: "Lucida Grande", "Bitstream Vera Sans", "Verdana";
-      font-size: 13px;
-      color: #333;
-    }
-    div.page {
-      border: 2px solid darkgray;
-      margin: 20px;
-      padding: 10px;
-    }
-    div.intro {
-      font-size: 26px;
-      padding-bottom: 40px;
-    }
-    div.tour {
-      background-color: white;
-      border: 1px solid green;
-      padding: 10px;
-    }
-    fieldset {
-      border: none;
-      padding: 5px 0;
-    }
-    fieldset.submit {
-      padding-top: 20px;
-    }
-    div.hello {
-      display: none;
-      padding-top: 40px;
-      width: 100%;
-      text-align: center;
-      font-weight: bold;
-      font-size: 20px;
-      color: darkred;
-    }
-  </style>
-</head>
-<body>
+<% content_for :head do %>
+<%= stylesheet_link_tag    "tourbot" %>
+<%= javascript_include_tag "tourbot" %>
+<% end %>
+
 <div class="page">
   <div class="intro">
     This page shows how the TourBOT works.
@@ -68,19 +29,3 @@
   </div>
   <div class="hello"></div>
 </div>
-</body>
-
-<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js"></script>
-<script type="text/javascript">
-  $(document).ready( function($) {
-    $('fieldset.submit input').click( function() {
-      var gender = $('input.gender:checked').val();
-      var salutation = ( gender == 'female' ? 'Ms.' : 'Mr.' );
-      var name = $('#first-name').val() + " " + $('#last-name').val();
-      var greeting = "Hello there " + salutation + " " + name;
-      $('.hello').text(greeting).show();
-      return false;
-    })
-  });
-</script>
-</html>
