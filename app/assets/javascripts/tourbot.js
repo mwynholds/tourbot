@@ -45,12 +45,13 @@ var _tourconfig = {
       if (variant == 'A') {
         add_markup();
         $('#tourbot').click(function() {
+          $.post(post_url, { interaction: { source: source, name: '0', 'final': false, session_id: session_id, variant: variant } }, null, 'json');
           current_step = 0;
           step_current();
         });
       }
 
-      $.post(post_url, { interaction: { source: source, name: '0', 'final': false, session_id: session_id, variant: variant } }, null, 'json');
+      $.post(post_url, { interaction: { source: source, name: '-1', 'final': false, session_id: session_id, variant: variant } }, null, 'json');
 
       for (var i = 0; i < interactions.length; i++) {
         var interaction = interactions[i];
