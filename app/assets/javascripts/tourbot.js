@@ -1,3 +1,5 @@
+//= require_self
+
 var _tourconfig = {
   source: 'tourbot',
   interactions:
