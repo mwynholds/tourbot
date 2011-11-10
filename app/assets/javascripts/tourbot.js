@@ -1,7 +1,16 @@
+var _tourconfig = {
+  source: 'tourbot',
+  interactions:
+          [
+            { name: '1', inbound: '#first-name', outbound: '#last-name', type: 'text', message: 'Tell me your name' },
+            { name: '2', inbound: 'input.gender', offset: { x: 100, y: 0 }, type: 'clickable', message: 'Tell me whether you\'re a boy or girl' },
+            { name: '3', inbound: 'fieldset.submit input', type: 'clickable', message: 'Now click this button!' }
+          ]
+};
+
 (function() {
   var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
   var root = this;
-  //var base_url = 'http://localhost:3000';
   var base_url, css_url;
   if (root.location.href.indexOf('http://localhost:3000') == 0) {
     base_url = 'http://localhost:3000';
@@ -24,6 +33,7 @@
   jQuery.noConflict();
   jQuery(document).ready( function($) {
     var config = _tourconfig || null;
+    var current_step = -1;
 
     if (is_valid(config)) {
       var session_id = guid();
@@ -35,7 +45,7 @@
       if (variant == 'A') {
         add_markup();
         $('#tourbot').click(function() {
-          step(interactions[0]);
+          step();
         });
       }
 
@@ -57,11 +67,12 @@
           };
         }(payload);
 
-        var $input = $(interaction.selector);
+        var $input = $(interaction.inbound);
         if ($input.length > 0) {
-          switch(interaction.type) {
-            case 'text':      handle_text($input, phone_home);      break;
-            case 'clickable': handle_clickable($input, phone_home); break;
+          var type = interaction.type;
+          switch(type) {
+            case 'text':      handle_text(interaction, phone_home);      break;
+            case 'clickable': handle_clickable(interaction, phone_home); break;
           }
         }
       }
@@ -74,30 +85,53 @@
       return true;
     }
 
-    function handle_text($input, phone_home) {
-      $input.blur( function() {
-        if ($input.val() != '') {
-          phone_home();
-        }
+    function handle_text(interaction, phone_home) {
+      var $inbound = $(interaction.inbound);
+      var $outbound = interaction.outbound ? $(interaction.outbound) : $inbound;
+      $inbound.blur( function() {
+        phone_home();
       });
+      $outbound.blur( function() {
+        step();
+      })
     }
 
-    function handle_clickable($input, phone_home) {
-      $input.click( phone_home );
+    function handle_clickable(interaction, phone_home) {
+      var $inbound = $(interaction.inbound);
+      var $outbound = interaction.outbound ? $(interaction.outbound) : $inbound;
+      $inbound.click( function() {
+        phone_home();
+      });
+      $outbound.click( function() {
+        step();
+      });
     }
 
     function add_markup() {
       $('head').append('<link rel="stylesheet" type="text/css" href="' + css_url + '"/>');
-      $('body').append('<div id="tourbot" class="step-0"><h2>Help</h2></div>');
+      $('body').append('<div id="tourbot" class="closed"><h2>Help</h2></div>');
     }
 
-    function step(interaction) {
+    function step() {
       var tourbot = $('#tourbot');
-      var target = $(interaction.selector);
-      tourbot.attr('class', '').addClass('step-1');
-      tourbot.find('h2').html(interaction.message);
-      tourbot.css('left', (target.offset().left + target.outerWidth() + 5) + 'px');
-      tourbot.css('top', (target.offset().top - 12) + 'px');
+
+      current_step ++;
+      if (current_step < interactions.length) {
+        var interaction = interactions[current_step];
+        var target = $(interaction.inbound);
+        target.focus();
+        var offset = interaction.offset || { x: 0, y: 0 };
+        tourbot.removeClass('closed').addClass('open');
+        tourbot.find('h2').html(interaction.message);
+        tourbot.css('left', (target.offset().left + target.outerWidth() + offset.x + 5) + 'px');
+        tourbot.css('top', (target.offset().top + offset.y - 12) + 'px');
+      }
+      else {
+        tourbot.removeClass('open').addClass('closed');
+        tourbot.find('h2').html('Help');
+        tourbot.css('left', '-30px');
+        tourbot.css('top', '300px');
+      }
     }
 
   });
