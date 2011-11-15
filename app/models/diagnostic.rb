@@ -10,6 +10,7 @@ class Diagnostic
     @interactions = interactions
     groups = interactions.group_by { |i| i.session_id }
     @sessions = groups.values.map { |g| Session.new(g) }
+    @sessions.sort! { |s| s.first_interaction.created_at <=> s.last_interaction.created_at }
   end
 
   private

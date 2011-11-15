@@ -19,11 +19,11 @@
     <tr>
       <td><%= session.source %></td>
       <td><%= session.id %></td>
-      <td><%= session.first_interaction.created_at %></td>
-      <td><%= session.last_interaction.created_at %></td>
+      <td><%= pretty_time session.first_interaction.created_at %></td>
+      <td><%= pretty_time session.last_interaction.created_at %></td>
       <td><%= session.variant %></td>
-      <td><%= session.started? %></td>
-      <td><%= session.completed? %></td>
+      <td class="boolean"><%= session.started? ? 'X' : '' %></td>
+      <td class="boolean"><%= session.completed? ? 'X' : '' %></td>
     </tr>
     <% end %>
     </tbody>
