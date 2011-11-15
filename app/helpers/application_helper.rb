@@ -1,5 +1,5 @@
 module ApplicationHelper
   def pretty_time(time)
-    time.localtime.strftime '%m/%e/%Y %l:%M%P'
+    (time.utc? ? time.localtime : time).strftime '%m/%e/%Y %l:%M%P'
   end
 end
