@@ -1,0 +1,31 @@
+<div class="page">
+  <div class="intro">
+    Diagnostics
+  </div>
+  <table class="diagnostics">
+    <thead>
+    <tr>
+      <th>Source</th>
+      <th>Session</th>
+      <th>First</th>
+      <th>Last</th>
+      <th>Variant</th>
+      <th>Started?</th>
+      <th>Completed?</th>
+    </tr>
+    </thead>
+    <tbody>
+    <% @diagnostic.sessions.each do |session| %>
+    <tr>
+      <td><%= session.source %></td>
+      <td><%= session.id %></td>
+      <td><%= pretty_time session.first_interaction.created_at %></td>
+      <td><%= pretty_time session.last_interaction.created_at %></td>
+      <td><%= session.variant %></td>
+      <td class="boolean"><%= session.started? ? 'X' : '' %></td>
+      <td class="boolean"><%= session.completed? ? 'X' : '' %></td>
+    </tr>
+    <% end %>
+    </tbody>
+  </table>
+</div>

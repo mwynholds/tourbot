@@ -1,0 +1,18 @@
+table.diagnostics {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+table.diagnostics thead {
+  background-color: #ddd;
+}
+
+table.diagnostics td,
+table.diagnostics th {
+  padding: 3px 6px;
+  border: 1px solid #bbb;
+}
+
+table.diagnostics td.boolean {
+  text-align: center;
+}
