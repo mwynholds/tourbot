@@ -107,7 +107,7 @@
 
     function add_markup() {
       $('head').append('<link rel="stylesheet" type="text/css" href="' + css_url + '"/>');
-      $('body').append('<div id="tourbot" class="closed"><h2>Help</h2></div>');
+      $('body').append('<div id="tourbot" class="closed"><h2>Guided Tour</h2></div>');
     }
 
     function step_in(interaction) {
@@ -141,12 +141,12 @@
         var offset = interaction.offset || { x: 0, y: 0 };
         tourbot.removeClass('closed').addClass('open');
         tourbot.find('h2').html(interaction.message);
-        tourbot.css('left', (target.offset().left + target.outerWidth() + offset.x + 5) + 'px');
+        tourbot.css('left', (target.offset().left + target.outerWidth() + offset.x + 10) + 'px');
         tourbot.css('top', (target.offset().top + offset.y - 12) + 'px');
       }
       else {
         tourbot.removeClass('open').addClass('closed');
-        tourbot.find('h2').html('Help');
+        tourbot.find('h2').html('Guided Tour');
         tourbot.css('left', '-30px');
         tourbot.css('top', '300px');
       }
