@@ -1,0 +1,25 @@
+<% content_for :head do %>
+<%= stylesheet_link_tag    "tourbot" %>
+<%= javascript_include_tag "tourbot-demo2" %>
+<% end %>
+
+<div class="page">
+  <div class="intro">
+    Multi-page demo
+  </div>
+  <div class="tour">
+    <form action="/demos/two2" method="get">
+      <fieldset>
+        <label for="first-name">First Name</label>
+        <input type="text" id="first-name" name="demo[first-name]"/>
+      </fieldset>
+      <fieldset>
+        <label for="last-name">Last Name</label>
+        <input type="text" id="last-name" name="demo[last-name]"/>
+      </fieldset>
+      <fieldset>
+        <input type="submit" value="Next Page"/>
+      </fieldset>
+    </form>
+  </div>
+</div>
