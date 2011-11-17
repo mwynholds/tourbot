@@ -64,14 +64,29 @@
       return null;
     };
 
+    Tourbot.prototype.create_variant = function() {
+      var query = root.location.search;
+      if (query.length > 0) {
+        query = query.substr(1);
+        var terms = query.split("&");
+        for (var i = 0; i < terms.length; i++) {
+          var nv = terms[i].split("=");
+          if (nv[0] == 'variant') {
+            return nv[1];
+          }
+        }
+      }
+
+      return ( Math.floor(Math.random()*2) == 0 ? 'A' : 'B' );
+    };
+
     Tourbot.prototype.initialize = function() {
       var page_number = this.get_page_number();
       var is_final_page = ( page_number == this.config.pages.length - 1);
       var session_id, variant, tour_open;
       if (page_number == 0) {
         session_id = this.create_guid();
-        variant = ( Math.floor(Math.random()*2) == 0 ? 'A' : 'B' );
-        variant = 'A';
+        variant = this.create_variant();
         if (! is_final_page) {
           $.cookies.set('_toursession', session_id);
           $.cookies.set('_tourvariant', variant);

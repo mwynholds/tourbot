@@ -6,6 +6,10 @@ When /^I go to demo (\w+)$/ do |demo|
   visit "/demos/#{demo}"
 end
 
+When /^I go to demo (\w+) with variant (\w+)$/ do |demo, variant|
+  visit "/demos/#{demo}?variant=#{variant}"
+end
+
 When /^I start the tour$/ do
   tourbot.click
 end
