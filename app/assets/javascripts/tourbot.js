@@ -32,15 +32,32 @@
 
     Tourbot.prototype.is_valid = function() {
       if (this.config == null) return false;
-      if (this.config.interactions == null) return false;
       if (this.config.source == null) return false;
-      return true;
+      if (this.config.pages == null) return false;
+
+      var page = this.get_page_number();
+      return ( page != null );
+    };
+
+    Tourbot.prototype.get_page_number = function() {
+      var path = root.location.pathname;
+      console.log("looking for: " + path);
+      for (var i = 0; i < this.config.pages.length; i++) {
+        var page = this.config.pages[i];
+        if (page.path == path) {
+          return i;
+        }
+      }
+
+      return null;
     };
 
     Tourbot.prototype.initialize = function() {
       var session_id = this.create_guid();
       var variant = ( Math.floor(Math.random()*2) == 0 ? 'A' : 'B' );
-      this.interactions = this.config.interactions;
+      var page_number = this.get_page_number();
+      var page = this.config.pages[page_number];
+      this.interactions = page.steps;
       var source = this.config.source;
 
       variant = 'A';
@@ -51,20 +68,21 @@
         this.save_initial_position();
         var self = this;
         this.tourbot.click(function() {
-          $.post(post_url, { interaction: { source: source, name: '0', 'final': false, session_id: session_id, variant: variant } }, null, 'json');
+          $.post(post_url, { interaction: { source: source, page: page_number, name: '0', 'final': false, session_id: session_id, variant: variant } }, null, 'json');
           self.current_step = 0;
           self.step_current();
         });
       }
 
-      $.post(post_url, { interaction: { source: source, name: '-1', 'final': false, session_id: session_id, variant: variant } }, null, 'json');
+      $.post(post_url, { interaction: { source: source, page: page_number, name: '-1', 'final': false, session_id: session_id, variant: variant } }, null, 'json');
 
       for (var i = 0; i < this.interactions.length; i++) {
         var interaction = this.interactions[i];
         var payload = {
           source: source,
+          page: page_number,
           name: interaction.name,
-          'final': ( i == this.interactions.length - 1 ),
+          'final': ( i == this.interactions.length - 1 ) && ( page_number == this.config.pages.length - 1 ),
           session_id: session_id,
           variant: variant
         };
