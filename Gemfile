@@ -15,4 +15,7 @@ group :development, :test do
   gem 'ruby-debug19', :require => 'ruby-debug'
   gem 'heroku'
   gem 'taps'
+  gem 'cucumber-rails'
+  gem 'webrat'
+  gem 'database_cleaner'
 end
