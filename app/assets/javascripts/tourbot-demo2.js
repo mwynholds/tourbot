@@ -1,4 +1,5 @@
 //= require_self
+//= require jquery.cookies.2.2.0
 //= require tourbot
 
 var _tourconfig = {

@@ -41,7 +41,6 @@
 
     Tourbot.prototype.get_page_number = function() {
       var path = root.location.pathname;
-      console.log("looking for: " + path);
       for (var i = 0; i < this.config.pages.length; i++) {
         var page = this.config.pages[i];
         if (page.path == path) {
@@ -53,14 +52,33 @@
     };
 
     Tourbot.prototype.initialize = function() {
-      var session_id = this.create_guid();
-      var variant = ( Math.floor(Math.random()*2) == 0 ? 'A' : 'B' );
       var page_number = this.get_page_number();
+      var is_final_page = ( page_number == this.config.pages.length - 1);
+      var session_id, variant, tour_open;
+      if (page_number == 0) {
+        session_id = this.create_guid();
+        variant = ( Math.floor(Math.random()*2) == 0 ? 'A' : 'B' );
+        variant = 'A';
+        if (! is_final_page) {
+          $.cookies.set('_toursession', session_id);
+          $.cookies.set('_tourvariant', variant);
+        }
+      }
+      else {
+        session_id = $.cookies.get('_toursession');
+        variant = $.cookies.get('_tourvariant');
+        tour_open = $.cookies.get('_touropen');
+        if (is_final_page) {
+          $.cookies.del('_toursession');
+          $.cookies.del('_tourvariant');
+          $.cookies.del('_touropen');
+        }
+      }
+
+      var source = this.config.source;
       var page = this.config.pages[page_number];
       this.interactions = page.steps;
-      var source = this.config.source;
 
-      variant = 'A';
       if (variant == 'A') {
         this.add_markup();
         this.tourbot = $('#tourbot');
@@ -71,7 +89,14 @@
           $.post(post_url, { interaction: { source: source, page: page_number, name: '0', 'final': false, session_id: session_id, variant: variant } }, null, 'json');
           self.current_step = 0;
           self.step_current();
+          if (! is_final_page) {
+            $.cookies.set('_touropen', true);
+          }
         });
+
+        if (tour_open) {
+          this.tourbot.click();
+        }
       }
 
       $.post(post_url, { interaction: { source: source, page: page_number, name: '-1', 'final': false, session_id: session_id, variant: variant } }, null, 'json');
@@ -82,7 +107,7 @@
           source: source,
           page: page_number,
           name: interaction.name,
-          'final': ( i == this.interactions.length - 1 ) && ( page_number == this.config.pages.length - 1 ),
+          'final': ( i == this.interactions.length - 1 ) && ( is_final_page ),
           session_id: session_id,
           variant: variant
         };
@@ -177,7 +202,7 @@
         // this allows for good animation on the first click -mike
         this.tourbot.css('left', this.tourbot.css('left'));
         this.tourbot.css('top', this.tourbot.css('top'));
-        
+
         this.tourbot.removeClass('closed').addClass('open');
         this.tourbot.find('h2').html(interaction.message);
         this.tourbot.css('left', (target.offset().left + target.outerWidth() + offset.x + 10) + 'px');
@@ -201,6 +226,12 @@
       for (var prop in this.initial_position) {
         this.tourbot.css(prop, this.initial_position[prop]);
       }
+    };
+
+    Tourbot.prototype.set_cookie = function(session_id) {
+      var date = new Date();
+      date.setDate( date.getDate() + (1.0/24) );
+      document.cookie = "_toursession=" + session_id + "; expires=" + date.toUTCString();
     };
 
     new Tourbot();
