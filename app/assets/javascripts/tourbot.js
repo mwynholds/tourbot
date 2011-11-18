@@ -154,11 +154,6 @@
       }
     };
 
-    Tourbot.prototype.to_json = function() {
-      var source = this.config.toSource();
-      return source.substring(1, source.length - 1);
-    };
-
     Tourbot.prototype.create_guid = function() {
       return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
         var r = Math.random()*16|0, v = c == 'x' ? r : (r&0x3|0x8);
@@ -200,7 +195,8 @@
       $('head').append('<link rel="stylesheet" type="text/css" href="' + this.css_url() + '"/>');
       $('body').append('<div id="tourbot" class="closed"><h2>Guided Tour</h2></div>');
       if (this.is_test) {
-        $('#tourbot').append('<div class="config" style="position: absolute; top: -1000px;">' + this.to_json() + '</div>');
+        $('#tourbot').append('<div class="session-id" style="position: absolute; top: -1000px;">' + this.session_id + '</div>');
+        $('#tourbot').append('<div class="variant" style="position: absolute; top: -1000px;">' + this.variant + '</div>');
       }
     };
 
