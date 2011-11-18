@@ -32,10 +32,12 @@ Feature: Touring
     When I complete the third step
     Then The tab should close
 
-  Scenario: Multi-page tour
+  Scenario: Complete a multi-page tour
     When I view the multi-page demo
      And I am assigned variant A
      And I complete the second step
     Then I should be viewing page two2
      And My session id should be the same
      And My variant should be the same
+    When I complete the second step
+    Then The tab should close
