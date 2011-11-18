@@ -9,6 +9,7 @@
       <th>Session</th>
       <th>First</th>
       <th>Last</th>
+      <th>Pages</th>
       <th>Variant</th>
       <th>Started?</th>
       <th>Completed?</th>
@@ -21,6 +22,7 @@
       <td><%= session.id %></td>
       <td><%= pretty_time session.first_interaction.created_at %></td>
       <td><%= pretty_time session.last_interaction.created_at %></td>
+      <td><%= session.pages %></td>
       <td><%= session.variant %></td>
       <td class="boolean"><%= session.started? ? 'X' : '' %></td>
       <td class="boolean"><%= session.completed? ? 'X' : '' %></td>

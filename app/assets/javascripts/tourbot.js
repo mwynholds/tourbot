@@ -1,17 +1,6 @@
 (function() {
   var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
   var root = this;
-  var base_url, css_url;
-  if (root.location.href.indexOf('http://localhost:3000') == 0) {
-    base_url = 'http://localhost:3000';
-    css_url = base_url + '/assets/tourbot.css';
-  }
-  else {
-    base_url = 'http://tourbot.herokuapp.com';
-    css_url = base_url + '/assets/application.css';
-  }
-
-  var post_url = base_url + '/interactions';
 
   jQuery.noConflict();
   jQuery(document).ready( function($) {
@@ -24,26 +13,97 @@
       this.session_id = null;
       this.variant = null;
       this.interactions = null;
+      this.base_url = this.base_url();
+      this.is_test = this.base_url != 'http://tourbot.herokuapp.com';
 
       if (this.is_valid()) {
         this.initialize();
       }
     };
 
+    Tourbot.prototype.base_url = function() {
+      var loc = root.location;
+      if (loc.hostname == 'localhost' || loc.hostname == '127.0.0.1') {
+        return loc.protocol + '//' + loc.host;
+      }
+      else {
+        return 'http://tourbot.herokuapp.com';
+      }
+    };
+
+    Tourbot.prototype.css_url = function() {
+      return this.base_url + ( this.is_test ? '/assets/tourbot.css' : '/assets/application.css' );
+    };
+
+    Tourbot.prototype.post_url = function() {
+      return this.base_url + '/interactions';
+    };
+
     Tourbot.prototype.is_valid = function() {
       if (this.config == null) return false;
-      if (this.config.interactions == null) return false;
       if (this.config.source == null) return false;
-      return true;
+      if (this.config.pages == null) return false;
+
+      var page = this.get_page_number();
+      return ( page != null );
+    };
+
+    Tourbot.prototype.get_page_number = function() {
+      var path = root.location.pathname;
+      for (var i = 0; i < this.config.pages.length; i++) {
+        var page = this.config.pages[i];
+        if (page.path == path) {
+          return i;
+        }
+      }
+
+      return null;
+    };
+
+    Tourbot.prototype.create_variant = function() {
+      var query = root.location.search;
+      if (query.length > 0) {
+        query = query.substr(1);
+        var terms = query.split("&");
+        for (var i = 0; i < terms.length; i++) {
+          var nv = terms[i].split("=");
+          if (nv[0] == 'variant') {
+            return nv[1];
+          }
+        }
+      }
+
+      return ( Math.floor(Math.random()*2) == 0 ? 'A' : 'B' );
     };
 
     Tourbot.prototype.initialize = function() {
-      var session_id = this.create_guid();
-      var variant = ( Math.floor(Math.random()*2) == 0 ? 'A' : 'B' );
-      this.interactions = this.config.interactions;
-      var source = this.config.source;
+      var page_number = this.get_page_number();
+      var is_final_page = ( page_number == this.config.pages.length - 1);
+      var session_id, variant, tour_open;
+      if (page_number == 0) {
+        session_id = this.create_guid();
+        variant = this.create_variant();
+        if (! is_final_page) {
+          $.cookies.set('_toursession', session_id);
+          $.cookies.set('_tourvariant', variant);
+        }
+      }
+      else {
+        session_id = $.cookies.get('_toursession');
+        variant = $.cookies.get('_tourvariant');
+        tour_open = $.cookies.get('_touropen');
+        if (is_final_page) {
+          $.cookies.del('_toursession');
+          $.cookies.del('_tourvariant');
+          $.cookies.del('_touropen');
+        }
+      }
 
-      variant = 'A';
+      var source = this.config.source;
+      var page = this.config.pages[page_number];
+      var post_url = this.post_url();
+      this.interactions = page.steps;
+
       if (variant == 'A') {
         this.add_markup();
         this.tourbot = $('#tourbot');
@@ -51,20 +111,28 @@
         this.save_initial_position();
         var self = this;
         this.tourbot.click(function() {
-          $.post(post_url, { interaction: { source: source, name: '0', 'final': false, session_id: session_id, variant: variant } }, null, 'json');
+          $.post(post_url, { interaction: { source: source, page: page_number, name: '0', 'final': false, session_id: session_id, variant: variant } }, null, 'json');
           self.current_step = 0;
           self.step_current();
+          if (! is_final_page) {
+            $.cookies.set('_touropen', true);
+          }
         });
+
+        if (tour_open) {
+          this.tourbot.click();
+        }
       }
 
-      $.post(post_url, { interaction: { source: source, name: '-1', 'final': false, session_id: session_id, variant: variant } }, null, 'json');
+      $.post(post_url, { interaction: { source: source, page: page_number, name: '-1', 'final': false, session_id: session_id, variant: variant } }, null, 'json');
 
       for (var i = 0; i < this.interactions.length; i++) {
         var interaction = this.interactions[i];
         var payload = {
           source: source,
+          page: page_number,
           name: interaction.name,
-          'final': ( i == this.interactions.length - 1 ),
+          'final': ( i == this.interactions.length - 1 ) && ( is_final_page ),
           session_id: session_id,
           variant: variant
         };
@@ -124,8 +192,12 @@
     };
 
     Tourbot.prototype.add_markup = function() {
-      $('head').append('<link rel="stylesheet" type="text/css" href="' + css_url + '"/>');
+      $('head').append('<link rel="stylesheet" type="text/css" href="' + this.css_url() + '"/>');
       $('body').append('<div id="tourbot" class="closed"><h2>Guided Tour</h2></div>');
+      if (this.is_test) {
+        $('#tourbot').append('<div class="session-id" style="position: absolute; top: -1000px;">' + this.session_id + '</div>');
+        $('#tourbot').append('<div class="variant" style="position: absolute; top: -1000px;">' + this.variant + '</div>');
+      }
     };
 
     Tourbot.prototype.step_in = function(interaction) {
@@ -159,14 +231,16 @@
         // this allows for good animation on the first click -mike
         this.tourbot.css('left', this.tourbot.css('left'));
         this.tourbot.css('top', this.tourbot.css('top'));
-        
+
         this.tourbot.removeClass('closed').addClass('open');
+        this.tourbot.attr('tourbot-step', this.current_step);
         this.tourbot.find('h2').html(interaction.message);
         this.tourbot.css('left', (target.offset().left + target.outerWidth() + offset.x + 10) + 'px');
         this.tourbot.css('top', (target.offset().top + offset.y - 12) + 'px');
       }
       else {
         this.tourbot.removeClass('open').addClass('closed');
+        this.tourbot.removeAttr('tourbot-step');
         this.tourbot.find('h2').html('Guided Tour');
         this.restore_initial_position();
       }

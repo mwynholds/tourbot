@@ -30,6 +30,10 @@ class Session
     @interactions.last
   end
 
+  def pages
+    @interactions.map(&:page).uniq.join(", ")
+  end
+
   def variant
     @interactions.first.variant
   end

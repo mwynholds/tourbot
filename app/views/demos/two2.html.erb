@@ -1,22 +1,17 @@
 <% content_for :head do %>
 <%= stylesheet_link_tag    "tourbot" %>
-<%= javascript_include_tag "tourbot-demo1" %>
+<%= javascript_include_tag "tourbot-demo2" %>
 <% end %>
 
 <div class="page">
   <div class="intro">
-    Simple demo
+    Multi-page demo - part II
   </div>
   <div class="tour">
     <form>
-      <fieldset>
-        <label for="first-name">First Name</label>
-        <input type="text" id="first-name"/>
-      </fieldset>
-      <fieldset>
-        <label for="last-name">Last Name</label>
-        <input type="text" id="last-name"/>
-      </fieldset>
+      <% (@params || {}).each do |name, value| %>
+      <input type="hidden" id="<%= name %>" value="<%= value %>"/>
+      <% end %>
       <fieldset>
         <label>Gender</label>
         <input type="radio" name="gender" class="gender" value="male">Male</input>
