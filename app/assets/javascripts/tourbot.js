@@ -13,6 +13,8 @@
       this.session_id = null;
       this.variant = null;
       this.interactions = null;
+      this.base_url = this.base_url();
+      this.is_test = this.base_url != 'http://tourbot.herokuapp.com';
 
       if (this.is_valid()) {
         this.initialize();
@@ -22,7 +24,7 @@
     Tourbot.prototype.base_url = function() {
       var loc = root.location;
       if (loc.hostname == 'localhost' || loc.hostname == '127.0.0.1') {
-        return loc.protocol + '://' + loc.host;
+        return loc.protocol + '//' + loc.host;
       }
       else {
         return 'http://tourbot.herokuapp.com';
@@ -30,13 +32,7 @@
     };
 
     Tourbot.prototype.css_url = function() {
-      var base = this.base_url;
-      if (base == 'http://tourbot.herokuapp.com') {
-        return base + '/assets/application.css';
-      }
-      else {
-        return base + '/assets/tourbot.css';
-      }
+      return this.base_url + ( this.is_test ? '/assets/tourbot.css' : '/assets/application.css' );
     };
 
     Tourbot.prototype.post_url = function() {
@@ -158,6 +154,11 @@
       }
     };
 
+    Tourbot.prototype.to_json = function() {
+      var source = this.config.toSource();
+      return source.substring(1, source.length - 1);
+    };
+
     Tourbot.prototype.create_guid = function() {
       return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
         var r = Math.random()*16|0, v = c == 'x' ? r : (r&0x3|0x8);
@@ -198,6 +199,9 @@
     Tourbot.prototype.add_markup = function() {
       $('head').append('<link rel="stylesheet" type="text/css" href="' + this.css_url() + '"/>');
       $('body').append('<div id="tourbot" class="closed"><h2>Guided Tour</h2></div>');
+      if (this.is_test) {
+        $('#tourbot').append('<div class="config" style="position: absolute; top: -1000px;">' + this.to_json() + '</div>');
+      }
     };
 
     Tourbot.prototype.step_in = function(interaction) {

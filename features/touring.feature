@@ -16,3 +16,14 @@ Feature: Touring
     When I go to demo one with variant A
      And I start the tour
     Then I should see the first step
+
+  Scenario: Complete a single-page tour
+    When I go to demo one with variant A
+     And I start the tour
+    Then I should see the first step
+    When I complete the first step
+    Then I should see the second step
+    When I complete the second step
+    Then I should see the third step
+    When I complete the third step
+    Then The tab should close
