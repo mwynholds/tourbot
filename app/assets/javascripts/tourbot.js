@@ -12,9 +12,6 @@
     if (loc.hostname == 'localhost' || loc.hostname == '127.0.0.1') {
       return loc.protocol + '//' + loc.host;
     }
-    else if (loc.hostname == 'test.tourbot.com') {
-      return 'http://localhost:3000';
-    }
     else {
       return 'http://tourbot.herokuapp.com';
     }
@@ -67,15 +64,19 @@
         this.variant = null;
         this.interactions = null;
         this.base_url = base_url();
-        this.is_test = this.base_url != 'http://tourbot.herokuapp.com';
+        this.is_local = this.base_url != 'http://tourbot.herokuapp.com';
 
         if (this.is_valid()) {
           this.initialize();
         }
       };
 
+      Tourbot.prototype.fake_path = function() {
+        return typeof(__tourbot_fake_path) == 'undefined' ? null : __tourbot_fake_path;
+      };
+
       Tourbot.prototype.css_url = function() {
-        return this.base_url + ( this.is_test ? '/assets/tourbot.css' : '/assets/application.css' );
+        return this.base_url + ( this.is_local ? '/assets/tourbot.css' : '/assets/application.css' );
       };
 
       Tourbot.prototype.post_url = function() {
@@ -92,7 +93,7 @@
       };
 
       Tourbot.prototype.get_page_number = function() {
-        var path = ( (this.is_test && typeof(__tourbot_fake_path) != 'undefined') ? __tourbot_fake_path : root.location.pathname );
+        var path = this.fake_path() ||  root.location.pathname;
         for (var i = 0; i < this.config.pages.length; i++) {
           var page = this.config.pages[i];
           if (page.path == path) {
@@ -123,7 +124,6 @@
         var page_number = this.get_page_number();
         var is_final_page = ( page_number == this.config.pages.length - 1);
         var session_id, variant, tour_open;
-        console.log("cookies? " + $.cookies.test());
         if (page_number == 0) {
           session_id = this.create_guid();
           variant = this.create_variant();
@@ -238,7 +238,7 @@
       Tourbot.prototype.add_markup = function() {
         $('head').append('<link rel="stylesheet" type="text/css" href="' + this.css_url() + '"/>');
         $('body').append('<div id="tourbot" class="closed"><h2>Guided Tour</h2></div>');
-        if (this.is_test) {
+        if (this.is_local) {
           $('#tourbot').append('<div class="session-id" style="position: absolute; top: -1000px;">' + this.session_id + '</div>');
           $('#tourbot').append('<div class="variant" style="position: absolute; top: -1000px;">' + this.variant + '</div>');
         }
