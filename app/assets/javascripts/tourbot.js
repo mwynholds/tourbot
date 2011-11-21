@@ -64,7 +64,6 @@
         this.variant = null;
         this.interactions = null;
         this.base_url = base_url();
-        this.is_local = this.base_url != 'http://tourbot.herokuapp.com';
 
         if (this.is_valid()) {
           this.initialize();
@@ -76,7 +75,7 @@
       };
 
       Tourbot.prototype.css_url = function() {
-        return this.base_url + ( this.is_local ? '/assets/tourbot.css' : '/assets/application.css' );
+        return this.base_url + '/assets/tourbot.css';
       };
 
       Tourbot.prototype.post_url = function() {
@@ -238,10 +237,8 @@
       Tourbot.prototype.add_markup = function() {
         $('head').append('<link rel="stylesheet" type="text/css" href="' + this.css_url() + '"/>');
         $('body').append('<div id="tourbot" class="closed"><h2>Guided Tour</h2></div>');
-        if (this.is_local) {
-          $('#tourbot').append('<div class="session-id" style="position: absolute; top: -1000px;">' + this.session_id + '</div>');
-          $('#tourbot').append('<div class="variant" style="position: absolute; top: -1000px;">' + this.variant + '</div>');
-        }
+        $('#tourbot').append('<div class="session-id" style="position: absolute; top: -1000px;">' + this.session_id + '</div>');
+        $('#tourbot').append('<div class="variant" style="position: absolute; top: -1000px;">' + this.variant + '</div>');
       };
 
       Tourbot.prototype.step_in = function(interaction) {
