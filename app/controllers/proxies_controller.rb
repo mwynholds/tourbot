@@ -47,7 +47,7 @@ class ProxiesController < ApplicationController
 
   def inject_javascript!(html)
     js_include = javascript_include_tag "tourbot-#{@site}"
-    fake_path = "<script type='text/javascript'>var __tourbot_fake_path = '#{@path}';</script>"
+    fake_path = "<script type='text/javascript'>var __tourbot_fake_path = '#{@path.sub(/^\/proxy/, '')}';</script>"
 
     html.sub!(/(<\/head>)/i, fake_path + "\n" + js_include + "\n" + '\1')
   end
