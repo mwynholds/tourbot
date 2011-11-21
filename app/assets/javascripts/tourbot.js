@@ -1,10 +1,19 @@
 (function() {
   var root = this;
 
+//  if (typeof console == 'undefined' || typeof console.log == 'undefined') {
+//    var console = {};
+//    console.log = function(msg) {
+//    };
+//  }
+
   function base_url() {
     var loc = root.location;
     if (loc.hostname == 'localhost' || loc.hostname == '127.0.0.1') {
       return loc.protocol + '//' + loc.host;
+    }
+    else if (loc.hostname == 'test.tourbot.com') {
+      return 'http://localhost:3000';
     }
     else {
       return 'http://tourbot.herokuapp.com';
@@ -114,6 +123,7 @@
         var page_number = this.get_page_number();
         var is_final_page = ( page_number == this.config.pages.length - 1);
         var session_id, variant, tour_open;
+        console.log("cookies? " + $.cookies.test());
         if (page_number == 0) {
           session_id = this.create_guid();
           variant = this.create_variant();
