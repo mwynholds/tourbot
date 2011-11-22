@@ -276,27 +276,30 @@
           this.tourbot.removeClass('closed').addClass('open');
           this.tourbot.attr('tourbot-step', this.current_step);
           this.tourbot.find('h2').html(interaction.message);
-          this.tourbot.css('left', (target.offset().left + target.outerWidth() + offset.x + 10) + 'px');
-          this.tourbot.css('top', (target.offset().top + offset.y - 12) + 'px');
+
+          this.animate_to({
+            'left': target.offset().left + target.outerWidth() + offset.x + 10,
+            'top': target.offset().top + offset.y - 12
+          });
         }
         else {
           this.tourbot.removeClass('open').addClass('closed');
           this.tourbot.removeAttr('tourbot-step');
           this.tourbot.find('h2').html('Guided Tour');
-          this.restore_initial_position();
+          this.animate_to(this.initial_position);
         }
       };
 
       Tourbot.prototype.save_initial_position = function() {
         this.initial_position = {
-          'top' : this.tourbot.css('top'),
-          'left' : this.tourbot.css('left')
+          'top' : parseFloat(this.tourbot.css('top')),
+          'left' : parseFloat(this.tourbot.css('left'))
         };
       };
 
-      Tourbot.prototype.restore_initial_position = function() {
-        for (var prop in this.initial_position) {
-          this.tourbot.css(prop, this.initial_position[prop]);
+      Tourbot.prototype.animate_to = function(props) {
+        for (var prop in props) {
+          this.tourbot.css(prop, props[prop] + 'px');
         }
       };
 
