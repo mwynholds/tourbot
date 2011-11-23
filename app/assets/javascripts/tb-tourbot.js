@@ -3,7 +3,7 @@
 
   var Tourbot = function(jQuery, base_url) {
     $ = jQuery;
-    
+
     this.tourbot_tab = null;
     this.tourbot_message = null;
     this.config = _tourconfig || null;
@@ -191,7 +191,7 @@
   Tourbot.prototype.add_markup = function() {
     $('head').append('<link rel="stylesheet" type="text/css" href="' + this.css_url() + '"/>');
     $('body').append('<div id="tourbot-tab" class="tourbot"><h2>Guided Tour</h2></div>');
-    $('body').append('<div id="tourbot-message" class="tourbot">Placeholder</div>');
+    $('body').append('<div id="tourbot-message" class="tourbot"><div class="content"></div></div>');
     $('#tourbot-tab').append('<div class="session-id" style="position: absolute; top: -1000px;">' + this.session_id + '</div>');
     $('#tourbot-tab').append('<div class="variant" style="position: absolute; top: -1000px;">' + this.variant + '</div>');
   };
@@ -220,25 +220,35 @@
   Tourbot.prototype.step_current = function() {
     var self = this;
     if (this.current_step >= 0) {
+      this.tourbot_message.attr('tourbot-step', this.current_step);
+
       var interaction = this.interactions[this.current_step];
       var target = $(interaction.inbound);
       target.focus();
       var offset = interaction.offset || { x: 0, y: 0 };
       var left = target.offset().left + target.outerWidth() + offset.x + 10;
       var top = target.offset().top + offset.y - 12;
+      var content = this.tourbot_message.find('.content');
 
-      this.tourbot_message.attr('tourbot-step', this.current_step);
-      var visible = ( this.tourbot_tab.is(':visible') ? this.tourbot_tab : this.tourbot_message );
-      visible.fadeOut(400, function() {
-        self.tourbot_message.css('left', left).css('top', top);
-        self.tourbot_message.html(interaction.message);
-        self.tourbot_message.fadeIn(400);
-      });
+      if (this.tourbot_tab.is(':visible')) {
+        this.tourbot_tab.fadeOut(200, function() {
+          self.tourbot_message.css('left', left).css('top', top);
+          content.html(interaction.message);
+          self.tourbot_message.fadeIn(200);
+        });
+      }
+      else {
+        content.fadeOut(200, function() {
+          content.html(interaction.message);
+          content.fadeIn(200);
+        });
+        this.tourbot_message.animate({ left: left, top: top }, { duration: 400 });
+      }
     }
     else {
       this.tourbot_message.removeAttr('tourbot-step');
-      this.tourbot_message.fadeOut(400, function() {
-        self.tourbot_tab.fadeIn(400);
+      this.tourbot_message.fadeOut(200, function() {
+        self.tourbot_tab.fadeIn(200);
       });
     }
   };
