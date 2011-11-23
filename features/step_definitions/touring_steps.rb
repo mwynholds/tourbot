@@ -1,13 +1,17 @@
-def tourbot
-  find('#tourbot')
+def tourbot_tab
+  find('#tourbot-tab')
+end
+
+def tourbot_message
+  find('#tourbot-message')
 end
 
 def get_session_id
-  tourbot.find('.session-id').text.strip
+  tourbot_tab.find('.session-id').text.strip
 end
 
 def get_variant
-  tourbot.find('.variant').text.strip
+  tourbot_tab.find('.variant').text.strip
 end
 
 def get_page
@@ -42,7 +46,7 @@ When /^I am assigned variant (\w+)$/ do |variant|
 end
 
 When /^I start the tour$/ do
-  tourbot.click
+  tourbot_tab.click
 end
 
 When /^I complete the (first|second|third|fourth|fifth) step$/ do |step|
@@ -77,18 +81,22 @@ end
 
 Then /^I should (not )?see the tourbot tab$/ do |show|
   if show == 'not '
-    assert ! page.has_css?('#tourbot')
+    assert ! page.has_css?('#tourbot-tab')
   else
-    assert page.has_css?('#tourbot')
+    assert page.has_css?('#tourbot-tab')
   end
 end
 
-Then /^I should see the (first|second|third|fourth|fifth) step$/ do |step_num|
-  assert_equal step_num.to_s, tourbot['tourbot-step']
+Then /^I should not see any steps$/ do
+  assert_nil first('#tourbot-message')
 end
 
-Then /^The tab should close$/ do
-  assert tourbot['class'].split.include?('closed')
+Then /^I should see the (first|second|third|fourth|fifth) step$/ do |step_num|
+  assert_equal step_num.to_s, tourbot_message['tourbot-step']
+end
+
+Then /^The steps should close$/ do
+  step 'I should see the tourbot tab'
 end
 
 Then /^I should be viewing page (\w+)$/ do |page|

@@ -192,8 +192,8 @@
     $('head').append('<link rel="stylesheet" type="text/css" href="' + this.css_url() + '"/>');
     $('body').append('<div id="tourbot-tab" class="tourbot"><h2>Guided Tour</h2></div>');
     $('body').append('<div id="tourbot-message" class="tourbot">Placeholder</div>');
-    $('#tourbot').append('<div class="session-id" style="position: absolute; top: -1000px;">' + this.session_id + '</div>');
-    $('#tourbot').append('<div class="variant" style="position: absolute; top: -1000px;">' + this.variant + '</div>');
+    $('#tourbot-tab').append('<div class="session-id" style="position: absolute; top: -1000px;">' + this.session_id + '</div>');
+    $('#tourbot-tab').append('<div class="variant" style="position: absolute; top: -1000px;">' + this.variant + '</div>');
   };
 
   Tourbot.prototype.step_in = function(interaction) {
@@ -227,7 +227,7 @@
       var left = target.offset().left + target.outerWidth() + offset.x + 10;
       var top = target.offset().top + offset.y - 12;
 
-      this.tourbot_tab.attr('tourbot-step', this.current_step);
+      this.tourbot_message.attr('tourbot-step', this.current_step);
       var visible = ( this.tourbot_tab.is(':visible') ? this.tourbot_tab : this.tourbot_message );
       visible.fadeOut(400, function() {
         self.tourbot_message.css('left', left).css('top', top);
@@ -236,7 +236,7 @@
       });
     }
     else {
-      this.tourbot_tab.removeAttr('tourbot-step');
+      this.tourbot_message.removeAttr('tourbot-step');
       this.tourbot_message.fadeOut(400, function() {
         self.tourbot_tab.fadeIn(400);
       });
