@@ -39,32 +39,6 @@
   margin: 0 0 10px 0;
 }
 
-#tourbot-tab #by {
-  position: absolute;
-  font-size: 10px;
-  bottom: 3px;
-  right: 10px;
-  display: block;
-}
-
-#tourbot-tab #close {
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  border: 1px solid #666;
-  display: block;
-  font-size: 10px;
-  width: 8px;
-  height: 8px;
-  line-height: 6px;
-  text-align: center;
-}
-
-#tourbot-tab #close:hover {
-  color: #999;
-  border: 1px solid #999;
-}
-
 #tourbot-tab.closed {
   text-align: center;
   cursor: pointer;
@@ -83,26 +57,4 @@
   background-image: url(/assets/arrow.png);
   background-repeat: no-repeat;
   background-position: 8px 14px;
-}
-
-#tourbot-tab.optout {
-  width: 400px;
-  -webkit-transition: none;
-  -moz-transition: none;
-  -o-transition: none;
-  -ms-transition: none;
-  transition: none;  
-}
-
-#overlay {
-  background-color: black;
-  height: 100%;
-  left: 0px;
-  position: fixed;
-  top: 0px;
-  width: 100%;
-  z-index: 999;
-  opacity: 0.5;
-  -ms-filter: 'alpha(opacity=50)';
-  filter: alpha(opacity=50);
 }
