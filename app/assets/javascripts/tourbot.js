@@ -56,7 +56,8 @@
     jQuery(document).ready( function($) {
 
       var Tourbot = function() {
-        this.tourbot = null;
+        this.tourbot_tab = null;
+        this.tourbot_message = null;
         this.config = _tourconfig || null;
         this.current_step = -1;
         this.initial_position = {};
@@ -149,11 +150,12 @@
 
         if (variant == 'A') {
           this.add_markup();
-          this.tourbot = $('#tourbot');
+          this.tourbot_tab = $('#tourbot-tab');
+          this.tourbot_message = $('#tourbot-message');
 
           this.save_initial_position();
           var self = this;
-          this.tourbot.click(function() {
+          this.tourbot_tab.click(function() {
             $.post(post_url, { interaction: { source: source, page: page_number, name: '0', 'final': false, session_id: session_id, variant: variant } }, null, 'json');
             self.current_step = 0;
             self.step_current();
@@ -163,7 +165,7 @@
           });
 
           if (tour_open) {
-            this.tourbot.click();
+            this.tourbot_tab.click();
           }
         }
 
@@ -236,7 +238,8 @@
 
       Tourbot.prototype.add_markup = function() {
         $('head').append('<link rel="stylesheet" type="text/css" href="' + this.css_url() + '"/>');
-        $('body').append('<div id="tourbot" class="closed"><h2>Guided Tour</h2></div>');
+        $('body').append('<div id="tourbot-tab" class="closed"><h2>Guided Tour</h2></div>');
+        $('body').append('<div id="tourbot-message" class="closed">Placeholder</div>');
         $('#tourbot').append('<div class="session-id" style="position: absolute; top: -1000px;">' + this.session_id + '</div>');
         $('#tourbot').append('<div class="variant" style="position: absolute; top: -1000px;">' + this.variant + '</div>');
       };
@@ -270,12 +273,12 @@
           var offset = interaction.offset || { x: 0, y: 0 };
 
           // this allows for good animation on the first click -mike
-          this.tourbot.css('left', this.tourbot.css('left'));
-          this.tourbot.css('top', this.tourbot.css('top'));
+          this.tourbot_tab.css('left', this.tourbot_tab.css('left'));
+          this.tourbot_tab.css('top', this.tourbot_tab.css('top'));
 
-          this.tourbot.removeClass('closed').addClass('open');
-          this.tourbot.attr('tourbot-step', this.current_step);
-          this.tourbot.find('h2').html(interaction.message);
+          this.tourbot_tab.removeClass('closed').addClass('open');
+          this.tourbot_tab.attr('tourbot-step', this.current_step);
+          this.tourbot_tab.find('h2').html(interaction.message);
 
           this.animate_to({
             'left': target.offset().left + target.outerWidth() + offset.x + 10,
@@ -283,23 +286,23 @@
           });
         }
         else {
-          this.tourbot.removeClass('open').addClass('closed');
-          this.tourbot.removeAttr('tourbot-step');
-          this.tourbot.find('h2').html('Guided Tour');
+          this.tourbot_tab.removeClass('open').addClass('closed');
+          this.tourbot_tab.removeAttr('tourbot-step');
+          this.tourbot_tab.find('h2').html('Guided Tour');
           this.animate_to(this.initial_position);
         }
       };
 
       Tourbot.prototype.save_initial_position = function() {
         this.initial_position = {
-          'top' : parseFloat(this.tourbot.css('top')),
-          'left' : parseFloat(this.tourbot.css('left'))
+          'top' : parseFloat(this.tourbot_tab.css('top')),
+          'left' : parseFloat(this.tourbot_tab.css('left'))
         };
       };
 
       Tourbot.prototype.animate_to = function(props) {
         for (var prop in props) {
-          this.tourbot.css(prop, props[prop] + 'px');
+          this.tourbot_tab.css(prop, props[prop] + 'px');
         }
       };
 
