@@ -2,44 +2,37 @@
  *= require_self
  */
 
-#tourbot-tab {
+.tourbot {
   position: absolute;
-  background: #fff;
+  background-color: #fff;
   color: #444;
   margin: 0 auto;
   padding: 10px;
+  font-size: 16px;
+  line-height: 22px;
   font-family: Helvetica, Arial, sans-serif;
-  font-size: 12px;
-  line-height: 16px;
   -moz-box-shadow: 0 0 8px #111;
   -webkit-box-shadow: 0 0 8px #111;
   box-shadow: 0 0 8px #111;
   border-radius: 4px;
   -moz-border-radius: 4px;
   -webkit-border-radius: 4px;
-  -webkit-transition: all .5s ease-in-out;
-  -moz-transition: all .5s ease-in-out;
-  -o-transition: all .5s ease-in-out;
-  -ms-transition: all .5s ease-in-out;
-  transition: all .5s ease-in-out;
-  -webkit-transform: rotate(0deg);
-  -moz-transform: rotate(0deg);
   z-index: 1000;
 }
 
-#tourbot-tab * {
+.tourbot * {
   padding: 0;
   margin: 0;
   list-style: none;
 }
 
-#tourbot-tab h2 {
+.tourbot h2 {
   font-size: 18px;
   line-height: 20px;
   margin: 0 0 10px 0;
 }
 
-#tourbot-tab.closed {
+#tourbot-tab {
   text-align: center;
   cursor: pointer;
   width: 120px;
@@ -50,11 +43,10 @@
   -moz-transform: rotate(-90deg);
 }
 
-#tourbot-tab.open {
+#tourbot-message {
+  display: none;
   width: 400px;
   height: 20px;
-  padding-left: 25px;
-  background-image: url(/assets/arrow.png);
-  background-repeat: no-repeat;
-  background-position: 8px 14px;
+  padding-left: 30px;
+  background: #ffffff url(/assets/arrow.png) no-repeat 8px 14px;
 }
