@@ -71,6 +71,13 @@
     return ( Math.floor(Math.random()*2) == 0 ? 'A' : 'B' );
   };
 
+  Tourbot.prototype.create_guid = function() {
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+      var r = Math.random()*16|0, v = c == 'x' ? r : (r&0x3|0x8);
+      return v.toString(16);
+    });
+  };
+
   Tourbot.prototype.initialize = function() {
     var page_number = this.get_page_number();
     var is_final_page = ( page_number == this.config.pages.length - 1);
@@ -139,50 +146,31 @@
 
       var $input = $(interaction.inbound);
       if ($input.length > 0) {
-        var type = interaction.type;
-        switch(type) {
-          case 'text':      this.handle_text(interaction, phone_home);      break;
-          case 'clickable': this.handle_clickable(interaction, phone_home); break;
-        }
+        this.handle_step(interaction, phone_home);
       }
     }
   };
 
-  Tourbot.prototype.create_guid = function() {
-    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
-      var r = Math.random()*16|0, v = c == 'x' ? r : (r&0x3|0x8);
-      return v.toString(16);
-    });
-  };
-
-  Tourbot.prototype.handle_text = function(interaction, phone_home) {
+  Tourbot.prototype.handle_step = function(interaction, phone_home) {
     var $inbound = $(interaction.inbound);
     var $outbound = interaction.outbound ? $(interaction.outbound) : $inbound;
-    var self = this;
-    var step_in_f = function() {
-      self.step_in(interaction);
-    };
-
-    $inbound.blur(phone_home).focus(step_in_f);
-    $outbound.blur( function() {
-      self.step_out(interaction);
-    });
-    $outbound.focus(step_in_f);
+    this.handle_inbound($inbound, interaction, phone_home);
+    this.handle_outbound($outbound, interaction);
   };
 
-  Tourbot.prototype.handle_clickable = function(interaction, phone_home) {
-    var $inbound = $(interaction.inbound);
-    var $outbound = interaction.outbound ? $(interaction.outbound) : $inbound;
+  Tourbot.prototype.handle_inbound = function(inbound, interaction, phone_home) {
     var self = this;
-    var step_in_f = function() {
-      self.step_in(interaction);
-    };
+    var step_in = function() { self.step_in(interaction); };
 
-    $inbound.click(phone_home).focus(step_in_f);
-    $outbound.click( function() {
-      self.step_out(interaction);
-    });
-    $outbound.focus(step_in_f);
+    inbound.focus(step_in).change(phone_home);
+  };
+
+  Tourbot.prototype.handle_outbound = function(outbound, interaction) {
+    var self = this;
+    var step_in = function() { self.step_in(interaction); };
+    var step_out = function() { self.step_out(interaction); };
+
+    outbound.focus(step_in).change(step_out);
   };
 
   Tourbot.prototype.add_markup = function(session_id, variant) {
