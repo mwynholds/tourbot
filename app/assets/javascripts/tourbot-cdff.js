@@ -16,8 +16,10 @@ var _tourconfig = {
               path: '/registration.php',
               steps:
                       [
-                        { name: '2', inbound: '#username', outbound: '#terms', type: 'text', message: 'Fill out this form' },
-                        { name: '3', inbound: 'td.iam input:image', type: 'clickable', message: 'Click here and you\'re done!' }
+                        { name: '2', inbound: '#username', type: 'text', message: 'Enter the username you would like' },
+                        { name: '3', inbound: '#password', type: 'text', message: 'And now your password' },
+                        { name: '4', inbound: '#re_password', outbound: '#terms', type: 'text', message: 'And now everything else...' },
+                        { name: '5', inbound: 'td.iam input:image', type: 'clickable', message: 'Click here and you\'re done!' }
                       ]
             }
 
