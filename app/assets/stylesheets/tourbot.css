@@ -44,7 +44,7 @@
 }
 
 #tourbot-message {
-  width: 400px;
+  /* width: 400px; */
   height: 20px;
   padding-left: 30px;
   background: #ffffff url(/assets/arrow.png) no-repeat 8px 14px;
