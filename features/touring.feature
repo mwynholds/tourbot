@@ -13,6 +13,7 @@ Feature: Touring
     When I view the simple demo
      And I am assigned variant B
     Then I should not see the tourbot tab
+     And I should not see any steps
 
   Scenario: Start tour
     When I view the simple demo
@@ -30,7 +31,7 @@ Feature: Touring
     When I complete the second step
     Then I should see the third step
     When I complete the third step
-    Then The tab should close
+    Then The steps should close
 
   Scenario: Complete a multi-page tour
     When I view the multi-page demo
@@ -40,4 +41,4 @@ Feature: Touring
      And My session id should be the same
      And My variant should be the same
     When I complete the second step
-    Then The tab should close
+    Then The steps should close
