@@ -6,7 +6,7 @@
 
   function base_url() {
     var loc = root.location;
-    if (loc.hostname == 'localhost' || loc.hostname == '127.0.0.1') {
+    if (loc.hostname == 'localhost' || loc.hostname == '127.0.0.1' || loc.port == 3000) {
       return loc.protocol + '//' + loc.host;
     }
     else {

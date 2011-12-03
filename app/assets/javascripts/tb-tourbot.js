@@ -107,8 +107,8 @@
     this.interactions = page.steps;
 
     if (variant == 'A') {
-      this.browser_hacker.apply_hacks();
       this.add_markup(session_id, variant);
+      this.browser_hacker.apply_hacks();
 
       var self = this;
       this.tourbot_tab.click(function() {
@@ -190,6 +190,11 @@
 
     this.tourbot_tab.append('<div class="session-id" style="position: absolute; top: -1000px;">' + session_id + '</div>');
     this.tourbot_tab.append('<div class="variant" style="position: absolute; top: -1000px;">' + variant + '</div>');
+
+    if (this.browser_hacker.is_ie()) {
+      this.tourbot_tab.addClass('ie');
+      this.tourbot_message.addClass('ie');
+    }
   };
 
   Tourbot.prototype.step_in = function(interaction) {
