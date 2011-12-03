@@ -194,6 +194,8 @@
     if (this.browser_hacker.is_ie()) {
       this.tourbot_tab.addClass('ie');
       this.tourbot_message.addClass('ie');
+      PIE.attach(this.tourbot_tab[0]);
+      PIE.attach(this.tourbot_message[0]);
     }
   };
 

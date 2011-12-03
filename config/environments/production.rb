@@ -44,7 +44,7 @@ Tourbot::Application.configure do
   # config.action_controller.asset_host = "http://assets.example.com"
 
   # Precompile additional assets (application.js, application.css, and all non-JS/CSS are already added)
-  config.assets.precompile += %w( tourbot-*.js tourbot.css jquery.cookies.*.js )
+  config.assets.precompile += %w( tourbot-*.js tourbot.css jquery.cookies.2.2.0.js PIE-1.0beta5.js )
 
   # Disable delivery errors, bad email addresses will be ignored
   # config.action_mailer.raise_delivery_errors = false
