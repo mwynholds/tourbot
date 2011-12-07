@@ -127,6 +127,7 @@
 
     $.post(post_url, { interaction: { source: source, page: page_number, name: '-1', 'final': false, session_id: session_id, variant: variant } }, null, 'json');
 
+    this.define_trig();
     for (var i = 0; i < this.interactions.length; i++) {
       var interaction = this.interactions[i];
       var payload = {
@@ -151,6 +152,18 @@
     }
   };
 
+  Tourbot.prototype.define_trig = function() {
+    $.fn.trig = function(callback) {
+      var $field = this;
+      if ($field.is('input[type="text"]') || $field.is('textarea') || $field.is('select')) {
+        $field.change(callback);
+      }
+      else {
+        $field.click(callback);
+      }
+    };
+  };
+
   Tourbot.prototype.handle_step = function(interaction, phone_home) {
     var $inbound = $(interaction.inbound);
     var $outbound = interaction.outbound ? $(interaction.outbound) : $inbound;
@@ -162,7 +175,7 @@
     var self = this;
     var step_in = function() { self.step_in(interaction); };
 
-    inbound.focus(step_in).change(phone_home);
+    inbound.focus(step_in).trig(phone_home);
   };
 
   Tourbot.prototype.handle_outbound = function(outbound, interaction) {
@@ -170,7 +183,7 @@
     var step_in = function() { self.step_in(interaction); };
     var step_out = function() { self.step_out(interaction); };
 
-    outbound.focus(step_in).change(step_out);
+    outbound.focus(step_in).trig(step_out);
   };
 
   Tourbot.prototype.add_markup = function(session_id, variant) {
