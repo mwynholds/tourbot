@@ -275,7 +275,9 @@
       this.tourbot_message.removeAttr('tourbot-step');
       this.tourbot_message.fadeOut(200, function() {
         setTimeout(function() {
-          self.tourbot_tab.fadeIn(200, function() { pie_attach(self.tourbot_tab[0]); });
+          self.tourbot_tab.fadeIn(200, function() {
+            pie_attach(self.tourbot_tab[0]);
+          });
         }, 2000);
       });
     }
