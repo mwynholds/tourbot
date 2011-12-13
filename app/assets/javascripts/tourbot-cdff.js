@@ -9,7 +9,7 @@ var _tourconfig = {
               path: '/',
               steps:
                       [
-                        { name: '1', inbound: 'td.header_bg_image a', offset: { x: -20, y: -7 }, message: 'Click me to sign up!!' }
+                        { name: '1', inbound: 'td.header_bg_image a img', message: 'Click me to sign up!!' }
                       ]
             },
             {
