@@ -14,13 +14,15 @@
     }
   }
 
+  var detect = root.tourbot.BrowserDetect;
+
   var JQUERY = 'http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js';
   var COOKIES = base_url() + '/assets/jquery.cookies.2.2.0.js';
   var PIE = base_url() + '/assets/PIE-1.0beta5.js';
 
   var jq = function() { return typeof jQuery != 'undefined'; };
   var jqc = function() { return typeof jQuery.cookies != 'undefined'; };
-  var pie = function() { return typeof window['PIE'] != 'undefined'; };
+  var pie = function() { return detect.browser != 'Explorer' || typeof window['PIE'] != 'undefined'; };
   wait_for(jq, JQUERY, function() {
     wait_for(jqc, COOKIES, function() {
       wait_for(pie, PIE, ready_to_go);

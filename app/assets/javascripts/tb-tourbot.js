@@ -1,5 +1,15 @@
 (function(root) {
   var $;
+  var pie_attach = function(el) {
+    if (typeof root['PIE'] != 'undefined') {
+      root['PIE'].attach(el);
+    }
+  };
+  var pie_detach = function(el) {
+    if (typeof root['PIE'] != 'undefined') {
+      root['PIE'].detach(el);
+    }
+  };
 
   var Tourbot = function(jQuery, base_url) {
     $ = jQuery;
@@ -207,8 +217,8 @@
     if (this.browser_hacker.is_ie()) {
       this.tourbot_tab.addClass('ie');
       this.tourbot_message.addClass('ie');
-      PIE.attach(this.tourbot_tab[0]);
-      PIE.attach(this.tourbot_message[0]);
+      pie_attach(this.tourbot_tab[0]);
+      pie_attach(this.tourbot_message[0]);
     }
   };
 
@@ -248,6 +258,7 @@
 
       if (this.tourbot_tab.is(':visible')) {
         this.tourbot_tab.fadeOut(200, function() {
+          pie_detach(self.tourbot_tab[0]);
           content.html(interaction.message);
           self.tourbot_message.css('left', left).css('top', top).fadeIn(200);
         });
@@ -264,7 +275,7 @@
       this.tourbot_message.removeAttr('tourbot-step');
       this.tourbot_message.fadeOut(200, function() {
         setTimeout(function() {
-          self.tourbot_tab.fadeIn(200);
+          self.tourbot_tab.fadeIn(200, function() { pie_attach(self.tourbot_tab[0]); });
         }, 2000);
       });
     }
