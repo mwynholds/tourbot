@@ -190,10 +190,9 @@
 
   Tourbot.prototype.handle_outbound = function(outbound, interaction) {
     var self = this;
-    var step_in = function() { self.step_in(interaction); };
     var step_out = function() { self.step_out(interaction); };
 
-    outbound.focus(step_in).trig(step_out);
+    outbound.trig(step_out);
   };
 
   Tourbot.prototype.add_markup = function(session_id, variant) {
@@ -224,6 +223,7 @@
 
   Tourbot.prototype.step_in = function(interaction) {
     if (this.current_step >= 0) {
+      //console.log("step in: " + interaction.inbound + " - " + this.current_step);
       var new_step = this.interactions.indexOf(interaction);
       if (new_step != this.current_step) {
         this.current_step = new_step;
@@ -250,7 +250,9 @@
 
       var interaction = this.interactions[this.current_step];
       var target = $(interaction.inbound);
-      target.focus();
+      if (! target.is(':focus')) {
+        target.focus();
+      }
       var offset = interaction.offset || { x: 0, y: 0 };
       var left = target.offset().left + target.outerWidth() + offset.x + 10;
       var top = target.offset().top + offset.y - 12;
