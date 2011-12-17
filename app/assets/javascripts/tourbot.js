@@ -1,33 +1,23 @@
+//= require jquery-1.7.1
+//= require jquery.cookies.2.2.0
 //= require tb-tourbot
 //= require tb-browser-hacker
 //= require tb-browser-detect
 
 (function(root) {
 
-  function base_url() {
-    var loc = root.location;
-    if (loc.hostname == 'localhost' || loc.hostname == '127.0.0.1' || loc.port == 3000) {
-      return loc.protocol + '//' + loc.host;
-    }
-    else {
-      return 'http://tourbot.herokuapp.com';
-    }
-  }
+  var load_tourbot = function() {
+    var detect = root.tourbot.BrowserDetect;
 
-  var detect = root.tourbot.BrowserDetect;
+    var PIE = base_url() + '/assets/PIE-1.0beta5.js';
+    var pie = function() { return detect.browser != 'Explorer' || typeof window['PIE'] != 'undefined'; };
+    wait_for(pie, PIE, ready_to_go);
+  };
 
-  var JQUERY = 'http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js';
-  var COOKIES = base_url() + '/assets/jquery.cookies.2.2.0.js';
-  var PIE = base_url() + '/assets/PIE-1.0beta5.js';
-
-  var jq = function() { return typeof jQuery != 'undefined'; };
-  var jqc = function() { return typeof jQuery.cookies != 'undefined'; };
-  var pie = function() { return detect.browser != 'Explorer' || typeof window['PIE'] != 'undefined'; };
-  wait_for(jq, JQUERY, function() {
-    wait_for(jqc, COOKIES, function() {
-      wait_for(pie, PIE, ready_to_go);
-    })
-  });
+  var tb_jquery = root.jQuery;
+  root.jQuery = null;
+  root.$ = null;
+  load_tourbot();
 
   function wait_for(is_ready, url, callback) {
     if (! is_ready()) {
@@ -54,10 +44,21 @@
   }
 
   function ready_to_go() {
-
-    jQuery.noConflict();
-    jQuery(document).ready( function() {
-      new root.tourbot.Tourbot(jQuery, base_url());
+    // super hack to save Array.push()
+    Array.prototype.tb_push = Array.prototype.push;
+    tb_jquery(document).ready( function() {
+      Array.prototype.push = Array.prototype.tb_push;
+      new root.tourbot.Tourbot(tb_jquery, base_url());
     });
+  }
+
+  function base_url() {
+    var loc = root.location;
+    if (loc.hostname == 'localhost' || loc.hostname == '127.0.0.1' || loc.port == 3000) {
+      return loc.protocol + '//' + loc.host;
+    }
+    else {
+      return 'http://tourbot.herokuapp.com';
+    }
   }
 })(window);

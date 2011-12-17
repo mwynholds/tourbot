@@ -54,7 +54,7 @@
   };
 
   Tourbot.prototype.get_page_number = function() {
-    var path = this.fake_path() ||  root.location.pathname;
+    var path = this.fake_path() || root.location.pathname;
     for (var i = 0; i < this.config.pages.length; i++) {
       var page = this.config.pages[i];
       if (page.path == path) {
@@ -159,6 +159,9 @@
       if ($input.length > 0) {
         this.handle_step(interaction, phone_home);
       }
+//      else {
+//        alert("cannot find: " + interaction.inbound);
+//      }
     }
   };
 
