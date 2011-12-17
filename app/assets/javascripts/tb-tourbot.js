@@ -199,14 +199,7 @@
   };
 
   Tourbot.prototype.add_markup = function(session_id, variant) {
-    //$('head').append('<link rel="stylesheet" type="text/css" href="' + this.css_url() + '"/>');
-    var headID = document.getElementsByTagName("head")[0];
-    var cssNode = document.createElement('link');
-    cssNode.type = 'text/css';
-    cssNode.rel = 'stylesheet';
-    cssNode.href = this.css_url();
-    cssNode.media = 'screen';
-    headID.appendChild(cssNode);
+    $('head').append('<link rel="stylesheet" type="text/css" href="' + this.css_url() + '"/>');
 
     this.tourbot_tab = $('<div id="tourbot-tab" class="tourbot"><h2>Guided Tour</h2></div>');
     this.tourbot_message = $('<div id="tourbot-message" class="tourbot" style="display:none;"></div>');
