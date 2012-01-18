@@ -201,13 +201,15 @@
   Tourbot.prototype.add_markup = function(session_id, variant) {
     $('head').append('<link rel="stylesheet" type="text/css" href="' + this.css_url() + '"/>');
 
-    this.tourbot_tab = $('<div id="tourbot-tab" class="tourbot"><h2>Guided Tour</h2></div>');
+    this.tourbot_tab = $('<div id="tourbot-tab" class="tourbot"></div>');
     this.tourbot_message = $('<div id="tourbot-message" class="tourbot" style="display:none;"></div>');
-    this.tourbot_message_content = $('<div class="content">foo</div>');
+    this.tourbot_message_content = $('<div class="content"></div>');
     $('body').append(this.tourbot_tab).append(this.tourbot_message.append(this.tourbot_message_content));
 
     this.tourbot_tab.append('<div class="session-id" style="position: absolute; top: -1000px;">' + session_id + '</div>');
     this.tourbot_tab.append('<div class="variant" style="position: absolute; top: -1000px;">' + variant + '</div>');
+
+    this.tourbot_tab.hover(function() { $(this).toggleClass('hover'); });
 
     if (this.browser_hacker.is_ie()) {
       this.tourbot_tab.addClass('ie');
