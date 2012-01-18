@@ -11,13 +11,15 @@
   font-size: 16px;
   line-height: 22px;
   font-family: Helvetica, Arial, sans-serif;
+  z-index: 1000;
+
+  box-shadow: 0 0 8px #111;
   -moz-box-shadow: 0 0 8px #111;
   -webkit-box-shadow: 0 0 8px #111;
-  box-shadow: 0 0 8px #111;
+
   border-radius: 4px;
   -moz-border-radius: 4px;
   -webkit-border-radius: 4px;
-  z-index: 1000;
 }
 
 .tourbot * {
@@ -39,13 +41,24 @@
   height: 20px;
   top: 300px;
   left: -55px;
+
   -webkit-transform: rotate(-90deg);
   -moz-transform: rotate(-90deg);
+  -o-transform: rotate(-90deg);
+  filter: progid:DXImageTransform.Microsoft.BasicImage(rotation=3);
 }
 
 #tourbot-message {
-  /* width: 400px; */
   height: 20px;
   padding-left: 30px;
   background: #ffffff url(/assets/arrow.png) no-repeat 8px 14px;
+}
+
+.tourbot.ie {
+  /* border: 2px solid #111; */
+}
+
+#tourbot-tab.ie {
+  top: 240px;
+  left: -2px;
 }

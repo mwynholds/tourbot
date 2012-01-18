@@ -1,5 +1,15 @@
 (function(root) {
   var $;
+  var pie_attach = function(el) {
+    if (typeof root['PIE'] != 'undefined') {
+      root['PIE'].attach(el);
+    }
+  };
+  var pie_detach = function(el) {
+    if (typeof root['PIE'] != 'undefined') {
+      root['PIE'].detach(el);
+    }
+  };
 
   var Tourbot = function(jQuery, base_url) {
     $ = jQuery;
@@ -44,7 +54,7 @@
   };
 
   Tourbot.prototype.get_page_number = function() {
-    var path = this.fake_path() ||  root.location.pathname;
+    var path = this.fake_path() || root.location.pathname;
     for (var i = 0; i < this.config.pages.length; i++) {
       var page = this.config.pages[i];
       if (page.path == path) {
@@ -107,8 +117,8 @@
     this.interactions = page.steps;
 
     if (variant == 'A') {
-      this.browser_hacker.apply_hacks();
       this.add_markup(session_id, variant);
+      this.browser_hacker.apply_hacks();
 
       var self = this;
       this.tourbot_tab.click(function() {
@@ -127,6 +137,7 @@
 
     $.post(post_url, { interaction: { source: source, page: page_number, name: '-1', 'final': false, session_id: session_id, variant: variant } }, null, 'json');
 
+    this.define_trig();
     for (var i = 0; i < this.interactions.length; i++) {
       var interaction = this.interactions[i];
       var payload = {
@@ -148,7 +159,22 @@
       if ($input.length > 0) {
         this.handle_step(interaction, phone_home);
       }
+//      else {
+//        alert("cannot find: " + interaction.inbound);
+//      }
     }
+  };
+
+  Tourbot.prototype.define_trig = function() {
+    $.fn.trig = function(callback) {
+      var $field = this;
+      if ($field.is('input[type="text"]') || $field.is('textarea') || $field.is('select')) {
+        $field.change(callback);
+      }
+      else {
+        $field.click(callback);
+      }
+    };
   };
 
   Tourbot.prototype.handle_step = function(interaction, phone_home) {
@@ -162,26 +188,18 @@
     var self = this;
     var step_in = function() { self.step_in(interaction); };
 
-    inbound.focus(step_in).change(phone_home);
+    inbound.focus(step_in).trig(phone_home);
   };
 
   Tourbot.prototype.handle_outbound = function(outbound, interaction) {
     var self = this;
-    var step_in = function() { self.step_in(interaction); };
     var step_out = function() { self.step_out(interaction); };
 
-    outbound.focus(step_in).change(step_out);
+    outbound.trig(step_out);
   };
 
   Tourbot.prototype.add_markup = function(session_id, variant) {
-    //$('head').append('<link rel="stylesheet" type="text/css" href="' + this.css_url() + '"/>');
-    var headID = document.getElementsByTagName("head")[0];
-    var cssNode = document.createElement('link');
-    cssNode.type = 'text/css';
-    cssNode.rel = 'stylesheet';
-    cssNode.href = this.css_url();
-    cssNode.media = 'screen';
-    headID.appendChild(cssNode);
+    $('head').append('<link rel="stylesheet" type="text/css" href="' + this.css_url() + '"/>');
 
     this.tourbot_tab = $('<div id="tourbot-tab" class="tourbot"><h2>Guided Tour</h2></div>');
     this.tourbot_message = $('<div id="tourbot-message" class="tourbot" style="display:none;"></div>');
@@ -190,10 +208,18 @@
 
     this.tourbot_tab.append('<div class="session-id" style="position: absolute; top: -1000px;">' + session_id + '</div>');
     this.tourbot_tab.append('<div class="variant" style="position: absolute; top: -1000px;">' + variant + '</div>');
+
+    if (this.browser_hacker.is_ie()) {
+      this.tourbot_tab.addClass('ie');
+      this.tourbot_message.addClass('ie');
+      pie_attach(this.tourbot_tab[0]);
+      pie_attach(this.tourbot_message[0]);
+    }
   };
 
   Tourbot.prototype.step_in = function(interaction) {
     if (this.current_step >= 0) {
+      //console.log("step in: " + interaction.inbound + " - " + this.current_step);
       var new_step = this.interactions.indexOf(interaction);
       if (new_step != this.current_step) {
         this.current_step = new_step;
@@ -220,7 +246,9 @@
 
       var interaction = this.interactions[this.current_step];
       var target = $(interaction.inbound);
-      target.focus();
+      if (! target.is(':focus')) {
+        target.focus();
+      }
       var offset = interaction.offset || { x: 0, y: 0 };
       var left = target.offset().left + target.outerWidth() + offset.x + 10;
       var top = target.offset().top + offset.y - 12;
@@ -228,6 +256,7 @@
 
       if (this.tourbot_tab.is(':visible')) {
         this.tourbot_tab.fadeOut(200, function() {
+          pie_detach(self.tourbot_tab[0]);
           content.html(interaction.message);
           self.tourbot_message.css('left', left).css('top', top).fadeIn(200);
         });
@@ -244,7 +273,9 @@
       this.tourbot_message.removeAttr('tourbot-step');
       this.tourbot_message.fadeOut(200, function() {
         setTimeout(function() {
-          self.tourbot_tab.fadeIn(200);
+          self.tourbot_tab.fadeIn(200, function() {
+            pie_attach(self.tourbot_tab[0]);
+          });
         }, 2000);
       });
     }

@@ -22,7 +22,7 @@ class ProxiesController < ApplicationController
 
     if status == 200
       bits = http.body
-      if content_type == 'text/html'
+      if rewrite_html(@url, http)
         rewrite_links! bits
         inject_javascript! bits
       end
@@ -34,6 +34,13 @@ class ProxiesController < ApplicationController
   end
 
   private
+
+  def rewrite_html(url, http)
+    return false unless http.content_type == 'text/html'
+    return false if url =~ /iframe/  # hack for CDFF
+
+    true
+  end
 
   def retrieve_url
     @site = params[:site]
@@ -49,7 +56,7 @@ class ProxiesController < ApplicationController
     js_include = javascript_include_tag "tourbot-#{@site}"
     fake_path = "<script type='text/javascript'>var __tourbot_fake_path = '#{@path}';</script>"
 
-    html.sub!(/(<\/head>)/i, fake_path + "\n" + js_include + "\n" + '\1')
+    html.sub!(/(<head>)/i, '\1' + "\n" + fake_path + "\n" + js_include + "\n")
   end
 
   def rewrite_links!(html)
