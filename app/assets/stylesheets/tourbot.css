@@ -35,7 +35,8 @@
 }
 
 #tourbot-message span {
-  display: inline-block;
+  display: block;
+  float: left;
 }
 
 #tourbot-message .left {
