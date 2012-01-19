@@ -34,7 +34,7 @@
   font-family: Arial, Helvetica, sans-serif;
 }
 
-#tourbot-message div {
+#tourbot-message span {
   display: inline-block;
 }
 

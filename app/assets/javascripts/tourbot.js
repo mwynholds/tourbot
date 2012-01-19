@@ -10,11 +10,7 @@
   root.jQuery = null;
   root.$ = null;
 
-  var detect = root.tourbot.BrowserDetect;
-  if (detect.browser == 'Explorer') {
-    $.getScript( base_url() + '/assets/PIE-1.0beta5.js' );
-  }
-
+  // super-hack for CDFF
   Array.prototype.tb_push = Array.prototype.push;
   $(document).ready( function() {
     Array.prototype.push = Array.prototype.tb_push;

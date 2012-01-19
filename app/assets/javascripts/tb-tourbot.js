@@ -1,15 +1,5 @@
 (function(root) {
   var $;
-  var pie_attach = function(el) {
-    if (typeof root['PIE'] != 'undefined') {
-      root['PIE'].attach(el);
-    }
-  };
-  var pie_detach = function(el) {
-    if (typeof root['PIE'] != 'undefined') {
-      root['PIE'].detach(el);
-    }
-  };
 
   var Tourbot = function(jQuery, base_url) {
     $ = jQuery;
@@ -207,8 +197,8 @@
     this.tourbot_tab.hover(function() { $(this).toggleClass('hover'); });
 
     this.tourbot_message = $('<div id="tourbot-message" class="tourbot" style="display:none;"></div>');
-    this.tourbot_message.append('<div class="left">&nbsp;</div><div class="center">&nbsp;</div><div class="right">&nbsp;</div>');
-    this.tourbot_message_content = this.tourbot_message.find('.center');
+    this.tourbot_message.append('<span class="left">&nbsp;</span><span class="center"><span class="content"/></span><span class="right">&nbsp;</span>');
+    this.tourbot_message_content = this.tourbot_message.find('.content');
 
     $('body').append(this.tourbot_tab).append(this.tourbot_message);
   };
@@ -247,12 +237,11 @@
       }
       var offset = interaction.offset || { x: 0, y: 0 };
       var left = target.offset().left + target.outerWidth() + offset.x + 10;
-      var top = target.offset().top + offset.y - 12;
+      var top = target.offset().top + offset.y - 18;
       var content = this.tourbot_message_content;
 
       if (this.tourbot_tab.is(':visible')) {
         this.tourbot_tab.fadeOut(200, function() {
-          pie_detach(self.tourbot_tab[0]);
           content.html(interaction.message);
           self.tourbot_message.css('left', left).css('top', top).fadeIn(200);
         });
@@ -269,9 +258,7 @@
       this.tourbot_message.removeAttr('tourbot-step');
       this.tourbot_message.fadeOut(200, function() {
         setTimeout(function() {
-          self.tourbot_tab.fadeIn(200, function() {
-            pie_attach(self.tourbot_tab[0]);
-          });
+          self.tourbot_tab.fadeIn(200);
         }, 2000);
       });
     }
