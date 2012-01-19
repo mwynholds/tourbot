@@ -4,11 +4,6 @@
 
 .tourbot {
   position: absolute;
-  color: #444;
-  margin: 0 auto;
-  font-size: 16px;
-  line-height: 22px;
-  font-family: Helvetica, Arial, sans-serif;
   z-index: 1000;
 }
 
@@ -33,16 +28,29 @@
 }
 
 #tourbot-message {
-  height: 20px;
-  padding-left: 30px;
-  background: #ffffff url(/assets/arrow.png) no-repeat 8px 14px;
+  color: #fff;
+  font-size: 16px;
+  line-height: 56px;
+  font-family: Arial, Helvetica, sans-serif;
 }
 
-.tourbot.ie {
-  /* border: 2px solid #111; */
+#tourbot-message div {
+  display: inline-block;
 }
 
-#tourbot-tab.ie {
-  top: 240px;
-  left: -2px;
+#tourbot-message .left {
+  width: 30px;
+  height: 60px;
+  background: transparent url(/assets/tourbot-arrow-L.png) no-repeat 0 0;
+}
+
+#tourbot-message .center {
+  height: 60px;
+  background: transparent url(/assets/tourbot-1px-bg.png) repeat-x 0 0;
+}
+
+#tourbot-message .right {
+  width: 30px;
+  height: 60px;
+  background: transparent url(/assets/tourbot-flatend-R.png) no-repeat 0 0;
 }
