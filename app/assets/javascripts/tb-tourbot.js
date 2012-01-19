@@ -7,6 +7,8 @@
     this.tourbot_tab = null;
     this.tourbot_message = null;
     this.tourbot_message_content = null;
+    this.tourbot_offscreen_message = null;
+    this.tourbot_offscreen_message_content = null;
     this.config = _tourconfig || null;
     this.current_step = -1;
     this.interactions = null;
@@ -196,11 +198,14 @@
     this.tourbot_tab.append('<div class="variant" style="position: absolute; top: -1000px;">' + variant + '</div>');
     this.tourbot_tab.hover(function() { $(this).toggleClass('hover'); });
 
-    this.tourbot_message = $('<div id="tourbot-message" class="tourbot" style="display:none;"></div>');
-    this.tourbot_message.append('<span class="left">&nbsp;</span><span class="center"><span class="content"/></span><span class="right">&nbsp;</span>');
+    this.tourbot_message = $('<div id="tourbot-message" class="tourbot tourbot-message" style="display:none;"></div>');
+    this.tourbot_message.append('<span class="left">&nbsp;</span><span class="center"><div class="content"/></span><span class="right">&nbsp;</span>');
     this.tourbot_message_content = this.tourbot_message.find('.content');
 
-    $('body').append(this.tourbot_tab).append(this.tourbot_message);
+    this.tourbot_offscreen_message = this.tourbot_message.clone().attr('id', 'tourbot-message-offscreen').attr('style', '');
+    this.tourbot_offscreen_message_content = this.tourbot_offscreen_message.find('.content');
+
+    $('body').append(this.tourbot_tab).append(this.tourbot_message).append(this.tourbot_offscreen_message);
   };
 
   Tourbot.prototype.step_in = function(interaction) {
@@ -240,6 +245,8 @@
       var top = target.offset().top + offset.y - 18;
       var content = this.tourbot_message_content;
 
+
+
       if (this.tourbot_tab.is(':visible')) {
         this.tourbot_tab.fadeOut(200, function() {
           content.html(interaction.message);
@@ -247,11 +254,17 @@
         });
       }
       else {
-        content.fadeOut(200, function() {
-          content.html(interaction.message);
-          content.fadeIn(200);
+        this.tourbot_offscreen_message_content.html(interaction.message);
+        var newWidth = this.tourbot_offscreen_message_content.width() + 1;
+
+        content.fadeTo(200, 0, function() {
+          content.animate({ width: newWidth }, { duration: 200, complete: function() {
+            content.html(interaction.message);
+            content.fadeTo(200, 1);
+          } });
         });
-        this.tourbot_message.animate({ left: left, top: top }, { duration: 400 });
+
+        this.tourbot_message.animate({ left: left, top: top }, { duration: 600 });
       }
     }
     else {
