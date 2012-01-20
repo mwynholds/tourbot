@@ -254,17 +254,17 @@
         });
       }
       else {
+        var oldWidth = content.width();
         this.tourbot_offscreen_message_content.html(interaction.message);
         var newWidth = this.tourbot_offscreen_message_content.width() + 1;
 
         content.fadeTo(200, 0, function() {
-          content.animate({ width: newWidth }, { duration: 200, complete: function() {
-            content.html(interaction.message);
-            content.fadeTo(200, 1);
-          } });
+          content.html(interaction.message);
+          content.fadeTo(200, 1);
         });
 
-        this.tourbot_message.animate({ left: left, top: top }, { duration: 600 });
+        content.animate({ width: newWidth }, { duration: 400, queue: false });
+        this.tourbot_message.animate({ left: left, top: top }, { duration: 400, queue: false });
       }
     }
     else {
