@@ -59,3 +59,8 @@
   height: 60px;
   background: transparent url(/assets/tourbot-flatend-R.png) no-repeat 0 0;
 }
+
+.tourbot-message .content {
+  white-space: nowrap;
+  overflow: visible;
+}
