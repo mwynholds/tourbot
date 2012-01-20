@@ -23,6 +23,7 @@ group :development, :test do
   gem 'heroku'
   gem 'taps'
   gem 'cucumber-rails'
-  gem 'webrat'
+  gem 'capybara'
+  gem 'capybara-webkit'
   gem 'database_cleaner'
 end
