@@ -4,22 +4,7 @@
 
 .tourbot {
   position: absolute;
-  background-color: #fff;
-  color: #444;
-  margin: 0 auto;
-  padding: 10px;
-  font-size: 16px;
-  line-height: 22px;
-  font-family: Helvetica, Arial, sans-serif;
   z-index: 1000;
-
-  box-shadow: 0 0 8px #111;
-  -moz-box-shadow: 0 0 8px #111;
-  -webkit-box-shadow: 0 0 8px #111;
-
-  border-radius: 4px;
-  -moz-border-radius: 4px;
-  -webkit-border-radius: 4px;
 }
 
 .tourbot * {
@@ -28,37 +13,49 @@
   list-style: none;
 }
 
-.tourbot h2 {
-  font-size: 18px;
-  line-height: 20px;
-  margin: 0 0 10px 0;
-}
-
 #tourbot-tab {
   text-align: center;
   cursor: pointer;
-  width: 120px;
-  height: 20px;
-  top: 300px;
-  left: -55px;
-
-  -webkit-transform: rotate(-90deg);
-  -moz-transform: rotate(-90deg);
-  -o-transform: rotate(-90deg);
-  filter: progid:DXImageTransform.Microsoft.BasicImage(rotation=3);
+  width: 54px;
+  height: 150px;
+  top: 250px;
+  left: -5px;
+  background: transparent url(/assets/tourbot-tab2.png) no-repeat 0 0;
 }
 
-#tourbot-message {
-  height: 20px;
-  padding-left: 30px;
-  background: #ffffff url(/assets/arrow.png) no-repeat 8px 14px;
-}
-
-.tourbot.ie {
-  /* border: 2px solid #111; */
-}
-
-#tourbot-tab.ie {
-  top: 240px;
+#tourbot-tab.hover {
   left: -2px;
+}
+
+.tourbot-message {
+  color: #fff;
+  font-size: 16px;
+  line-height: 56px;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+#tourbot-message-offscreen {
+  left: -1000px;
+}
+
+.tourbot-message span {
+  display: block;
+  float: left;
+}
+
+.tourbot-message .left {
+  width: 30px;
+  height: 60px;
+  background: transparent url(/assets/tourbot-arrow-L.png) no-repeat 0 0;
+}
+
+.tourbot-message .center {
+  height: 60px;
+  background: transparent url(/assets/tourbot-1px-bg.png) repeat-x 0 0;
+}
+
+.tourbot-message .right {
+  width: 30px;
+  height: 60px;
+  background: transparent url(/assets/tourbot-flatend-R.png) no-repeat 0 0;
 }

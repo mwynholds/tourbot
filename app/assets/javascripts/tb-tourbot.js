@@ -1,15 +1,5 @@
 (function(root) {
   var $;
-  var pie_attach = function(el) {
-    if (typeof root['PIE'] != 'undefined') {
-      root['PIE'].attach(el);
-    }
-  };
-  var pie_detach = function(el) {
-    if (typeof root['PIE'] != 'undefined') {
-      root['PIE'].detach(el);
-    }
-  };
 
   var Tourbot = function(jQuery, base_url) {
     $ = jQuery;
@@ -17,6 +7,8 @@
     this.tourbot_tab = null;
     this.tourbot_message = null;
     this.tourbot_message_content = null;
+    this.tourbot_offscreen_message = null;
+    this.tourbot_offscreen_message_content = null;
     this.config = _tourconfig || null;
     this.current_step = -1;
     this.interactions = null;
@@ -201,20 +193,19 @@
   Tourbot.prototype.add_markup = function(session_id, variant) {
     $('head').append('<link rel="stylesheet" type="text/css" href="' + this.css_url() + '"/>');
 
-    this.tourbot_tab = $('<div id="tourbot-tab" class="tourbot"><h2>Guided Tour</h2></div>');
-    this.tourbot_message = $('<div id="tourbot-message" class="tourbot" style="display:none;"></div>');
-    this.tourbot_message_content = $('<div class="content">foo</div>');
-    $('body').append(this.tourbot_tab).append(this.tourbot_message.append(this.tourbot_message_content));
-
+    this.tourbot_tab = $('<div id="tourbot-tab" class="tourbot"></div>');
     this.tourbot_tab.append('<div class="session-id" style="position: absolute; top: -1000px;">' + session_id + '</div>');
     this.tourbot_tab.append('<div class="variant" style="position: absolute; top: -1000px;">' + variant + '</div>');
+    this.tourbot_tab.hover(function() { $(this).toggleClass('hover'); });
 
-    if (this.browser_hacker.is_ie()) {
-      this.tourbot_tab.addClass('ie');
-      this.tourbot_message.addClass('ie');
-      pie_attach(this.tourbot_tab[0]);
-      pie_attach(this.tourbot_message[0]);
-    }
+    this.tourbot_message = $('<div id="tourbot-message" class="tourbot tourbot-message" style="display:none;"></div>');
+    this.tourbot_message.append('<span class="left">&nbsp;</span><span class="center"><div class="content"/></span><span class="right">&nbsp;</span>');
+    this.tourbot_message_content = this.tourbot_message.find('.content');
+
+    this.tourbot_offscreen_message = this.tourbot_message.clone().attr('id', 'tourbot-message-offscreen').attr('style', '');
+    this.tourbot_offscreen_message_content = this.tourbot_offscreen_message.find('.content');
+
+    $('body').append(this.tourbot_tab).append(this.tourbot_message).append(this.tourbot_offscreen_message);
   };
 
   Tourbot.prototype.step_in = function(interaction) {
@@ -251,31 +242,36 @@
       }
       var offset = interaction.offset || { x: 0, y: 0 };
       var left = target.offset().left + target.outerWidth() + offset.x + 10;
-      var top = target.offset().top + offset.y - 12;
+      var top = target.offset().top + offset.y - 18;
       var content = this.tourbot_message_content;
+
+
 
       if (this.tourbot_tab.is(':visible')) {
         this.tourbot_tab.fadeOut(200, function() {
-          pie_detach(self.tourbot_tab[0]);
           content.html(interaction.message);
           self.tourbot_message.css('left', left).css('top', top).fadeIn(200);
         });
       }
       else {
-        content.fadeOut(200, function() {
-          content.html(interaction.message);
-          content.fadeIn(200);
+        this.tourbot_offscreen_message_content.html(interaction.message);
+        var newWidth = this.tourbot_offscreen_message_content.width() + 1;
+
+        content.fadeTo(200, 0, function() {
+          content.animate({ width: newWidth }, { duration: 200, complete: function() {
+            content.html(interaction.message);
+            content.fadeTo(200, 1);
+          } });
         });
-        this.tourbot_message.animate({ left: left, top: top }, { duration: 400 });
+
+        this.tourbot_message.animate({ left: left, top: top }, { duration: 600 });
       }
     }
     else {
       this.tourbot_message.removeAttr('tourbot-step');
       this.tourbot_message.fadeOut(200, function() {
         setTimeout(function() {
-          self.tourbot_tab.fadeIn(200, function() {
-            pie_attach(self.tourbot_tab[0]);
-          });
+          self.tourbot_tab.fadeIn(200);
         }, 2000);
       });
     }
