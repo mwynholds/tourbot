@@ -26,7 +26,7 @@ var _tourconfig = {
                         { name: '6', inbound: 'input[name="gender"]', offset: { x: 90, y: 0 },
                                      message: 'Ummm... it\'s pretty obvious why we need to know this! :-)' },
                         { name: '7', inbound: '#u_ethnicity', message: 'This helps us match you up.' },
-                        { name: '8', inbound: '#u_country', outbound: '#u_postalcode',
+                        { name: '8', inbound: '#u_country', outbound: 'input[name="u_postalcode"]',
                                      message: 'We don\'t want you to have to travel too far to meet your soulmate!' },
                         { name: '9', inbound: 'input[name="conf_num2"]', outbound: '#terms',
                                      message: 'Sorry... this is to make sure you\'re not a hacker.' },

@@ -172,15 +172,18 @@
   Tourbot.prototype.handle_step = function(interaction, phone_home) {
     var $inbound = $(interaction.inbound);
     var $outbound = interaction.outbound ? $(interaction.outbound) : $inbound;
-    this.handle_inbound($inbound, interaction, phone_home);
+    this.handle_inbound($inbound, $outbound, interaction, phone_home);
     this.handle_outbound($outbound, interaction);
   };
 
-  Tourbot.prototype.handle_inbound = function(inbound, interaction, phone_home) {
+  Tourbot.prototype.handle_inbound = function(inbound, outbound, interaction, phone_home) {
     var self = this;
     var step_in = function() { self.step_in(interaction); };
 
     inbound.focus(step_in).trig(phone_home);
+    if (inbound != outbound) {
+      outbound.focus(step_in);
+    }
   };
 
   Tourbot.prototype.handle_outbound = function(outbound, interaction) {
@@ -236,13 +239,14 @@
       this.tourbot_message.attr('tourbot-step', this.current_step);
 
       var interaction = this.interactions[this.current_step];
-      var target = $(interaction.inbound);
-      if (! target.is(':focus')) {
-        target.focus();
+      var inbound = $(interaction.inbound);
+      var outbound = interaction.outbound ? $(interaction.outbound) : inbound;
+      if (! inbound.is(':focus') && ! outbound.is(':focus')) {
+        inbound.focus();
       }
       var offset = interaction.offset || { x: 0, y: 0 };
-      var left = target.offset().left + target.outerWidth() + offset.x + 10;
-      var top = target.offset().top + offset.y - 18;
+      var left = inbound.offset().left + inbound.outerWidth() + offset.x + 10;
+      var top = inbound.offset().top + offset.y - 18;
       var content = this.tourbot_message_content;
 
 
@@ -254,7 +258,6 @@
         });
       }
       else {
-        var oldWidth = content.width();
         this.tourbot_offscreen_message_content.html(interaction.message);
         var newWidth = this.tourbot_offscreen_message_content.width() + 1;
 
